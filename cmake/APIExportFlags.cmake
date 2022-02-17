@@ -1,0 +1,11 @@
+macro(set_api_flags target_name)
+    option(EXPORT_API_FLAGS "Export API flags to library build" ON)
+
+    if(EXPORT_API_FLAGS)
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_MXX_COMPILER_ID STREQUAL "Clang")
+            target_compile_definitions(${target_name} PRIVATE GNU_EXPORT)
+        else()
+            target_compile_definitions(${target_name} PRIVATE WIN_EXPORT)
+        endif()
+    endif()
+endmacro()
