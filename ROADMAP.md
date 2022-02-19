@@ -10,7 +10,7 @@ completed for the Alkahest engine.
 * [X] Event Queue
 * [X] Event Dispatcher
 * [X] Basic Window Creation
-* [ ] Networking
+* [X] Networking
 * [ ] Static Input Polling
 * [ ] Layer System
 * [ ] Maths Library
