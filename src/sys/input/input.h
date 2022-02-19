@@ -10,6 +10,7 @@ namespace Alkahest
     private:
         static Input *getInstance();
     public:
+        // TODO: find a way to use IWindow here instead of platform-specific classes
         friend class OpenGLWindow;
 
         // Keyboard
