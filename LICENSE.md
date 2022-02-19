@@ -1,0 +1,7 @@
+"THE BEER-WARE LICENSE" (Revision 42)
+
+<anthony@anthonyutt.dev> wrote this stuff. As long as you retain this notice,
+you can do whatever you want with this stuff. If we meet some day, and you
+think this stuff is worth it, you can by me a beer in return.     Anthony Utt
+
+License originially authored by Poul-Henning Kamp (phk).

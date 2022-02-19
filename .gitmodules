@@ -1,0 +1,6 @@
+[submodule "alkahest/lib/glfw"]
+	path = alkahest/lib/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "alkahest/lib/gl3w"]
+	path = alkahest/lib/gl3w
+	url = https://github.com/skaslev/gl3w.git
