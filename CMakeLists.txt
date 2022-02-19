@@ -10,10 +10,11 @@ file(
     GLOB
     source_files
     "${source_dir}/init/*.cpp"
-    "${source_dir}/sys/log/*.cpp"
-    "${source_dir}/sys/events/*.cpp"
-    "${source_dir}/sys/window/*.cpp"
     "${source_dir}/net/*.cpp"
+    "${source_dir}/sys/events/*.cpp"
+    "${source_dir}/sys/log/*.cpp"
+    "${source_dir}/sys/input/*.cpp"
+    "${source_dir}/sys/window/*.cpp"
 )
 
 # "Library" for project options / C++ standard

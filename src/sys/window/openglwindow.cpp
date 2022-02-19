@@ -3,6 +3,7 @@
 #include "../events/windowevent.h"
 #include "../events/keyevent.h"
 #include "../events/mouseevent.h"
+#include "../input/input.h"
 
 namespace Alkahest
 {
@@ -30,8 +31,8 @@ namespace Alkahest
 
     void OpenGLWindow::onUpdate()
     {
-        glfwPollEvents();
         glfwSwapBuffers(m_window);
+        glfwPollEvents();
     }
 
     void OpenGLWindow::setVSync(bool vsync)
@@ -107,27 +108,7 @@ namespace Alkahest
 
         glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods){
             WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
-            switch(action)
-            {
-                case GLFW_PRESS:
-                {
-                    KeyDownEvent* e = new KeyDownEvent(key, false);
-                    data.eventCallback(e);
-                    break;
-                }
-                case GLFW_REPEAT:
-                {
-                    KeyDownEvent* e = new KeyDownEvent(key, true);
-                    data.eventCallback(e);
-                    break;
-                }
-                case GLFW_RELEASE:
-                {
-                    KeyUpEvent* e = new KeyUpEvent(key);
-                    data.eventCallback(e);
-                    break;
-                }
-            }
+            Input::setKeyState(static_cast<Key>(key), static_cast<KeyState>(action));
         });
 
         glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods){

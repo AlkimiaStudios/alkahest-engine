@@ -14,6 +14,7 @@ namespace Alkahest
         virtual ~Application();
         void init();
         virtual void run();
+        virtual void update() {};
         void stop() { m_shouldStop = true; };
     protected:
         std::unique_ptr<IWindow> m_window;

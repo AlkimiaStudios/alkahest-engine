@@ -57,6 +57,7 @@ namespace Alkahest
         while (!m_shouldStop)
         {
             m_window->onUpdate();
+            update();
         }
     }
 
