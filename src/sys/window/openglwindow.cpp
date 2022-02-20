@@ -89,6 +89,9 @@ namespace Alkahest
         m_window = glfwCreateWindow(static_cast<int>(m_data.width), static_cast<int>(m_data.height), m_data.title.c_str(), nullptr, nullptr);
         glfwMakeContextCurrent(m_window);
         glfwSetWindowUserPointer(m_window, &m_data);
+        glfwSetInputMode(m_window, GLFW_CURSOR, ALKAHEST_CURSOR_MODE);
+        if (glfwRawMouseMotionSupported())
+            glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
         setVSync(true);
 
         glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height){
@@ -107,45 +110,19 @@ namespace Alkahest
         });
 
         glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods){
-            WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
             Input::setKeyState(static_cast<Key>(key), static_cast<KeyState>(action));
         });
 
         glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods){
-            WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
-            switch(action)
-            {
-                case GLFW_PRESS:
-                {
-                    MouseButtonDownEvent* e = new MouseButtonDownEvent(button, false);
-                    data.eventCallback(e);
-                    break;
-                }
-                case GLFW_REPEAT:
-                {
-                    MouseButtonDownEvent* e = new MouseButtonDownEvent(button, true);
-                    data.eventCallback(e);
-                    break;
-                }
-                case GLFW_RELEASE:
-                {
-                    MouseButtonUpEvent* e = new MouseButtonUpEvent(button);
-                    data.eventCallback(e);
-                    break;
-                }
-            }
+            Input::setMouseButtonState(static_cast<MouseButton>(button), static_cast<ButtonState>(action));
         });
 
         glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double x, double y){
-            WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
-            MouseMoveEvent* e = new MouseMoveEvent(x, y);
-            data.eventCallback(e);
+            Input::setMousePos(x, y);
         });
 
         glfwSetScrollCallback(m_window, [](GLFWwindow* window, double x, double y){
-            WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
-            MouseScrollEvent* e = new MouseScrollEvent(x, y);
-            data.eventCallback(e);
+            Input::setMouseScroll(x, y);
         });
     }
 

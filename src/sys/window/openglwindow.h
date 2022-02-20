@@ -7,6 +7,14 @@
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 
+#ifndef ALKAHEST_CURSOR_MODE
+#define ALKAHEST_CURSOR_MODE GLFW_CURSOR_NORMAL
+#endif
+
+#ifndef ALKAHEST_RAW_MOTION
+#define ALKAHEST_RAW_MOTION GLFW_TRUE
+#endif
+
 namespace Alkahest
 {
     class NOT_EXPORTED OpenGLWindow : public IWindow

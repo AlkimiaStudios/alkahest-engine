@@ -25,28 +25,35 @@ namespace Alkahest
     {
     };
 #else // OpenGL Fallback
-    enum KeyState {
+    enum KeyState
+    {
         KeyUp = GLFW_RELEASE,
         KeyDown = GLFW_PRESS,
         KeyHeld = GLFW_REPEAT
     };
 
-    enum ButtonState {
+    enum ButtonState
+    {
         ButtonUp = GLFW_RELEASE,
         ButtonDown = GLFW_PRESS,
         ButtonHeld = GLFW_REPEAT
     };
 
-    enum Axis {
-        MouseX = 1,
-        MouseY = 2,
+    enum Axis
+    {
         // TODO: Joystick/controller axis support
     };
 
     enum MouseButton
     {
-        // TODO: Implement OpenGL mouse buttons
-        ButtonNone
+        MouseButtonLeft = GLFW_MOUSE_BUTTON_1,
+        MouseButtonRight = GLFW_MOUSE_BUTTON_2,
+        MouseButtonMiddle = GLFW_MOUSE_BUTTON_3,
+        MouseButton4 = GLFW_MOUSE_BUTTON_4,
+        MouseButton5 = GLFW_MOUSE_BUTTON_5,
+        MouseButton6 = GLFW_MOUSE_BUTTON_6,
+        MouseButton7 = GLFW_MOUSE_BUTTON_7,
+        MouseButton8 = GLFW_MOUSE_BUTTON_8
     };
 
     enum Key

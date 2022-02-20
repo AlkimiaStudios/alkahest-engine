@@ -25,7 +25,10 @@ namespace Alkahest
         static bool isMouseButtonHeld(MouseButton button) { return getInstance()->isMouseButtonHeldImpl(button); };
         static ButtonState getMouseButtonState(MouseButton button) { return getInstance()->getMouseButtonStateImpl(button); };
 
-        // Mouse/Joystick Axis
+        static std::pair<double, double> getMousePos() { return getInstance()->getMousePosImpl(); };
+        static std::pair<double, double> getMouseScroll() { return getInstance()->getMouseScrollImpl(); };
+
+        // Joystick Axis
         static float getAxis(Axis axis) { return getInstance()->getAxisImpl(axis); };
 
         // Controller support
@@ -41,16 +44,23 @@ namespace Alkahest
         bool isMouseButtonHeldImpl(MouseButton button);
         ButtonState getMouseButtonStateImpl(MouseButton button);
 
+        std::pair<double, double> getMousePosImpl();
+        std::pair<double, double> getMouseScrollImpl();
+
         float getAxisImpl(Axis axis);
 
         // TODO: controller support impl
     private:
         static void setKeyState(Key keycode, KeyState state) { getInstance()->setKeyStateImpl(keycode, state); };
         static void setMouseButtonState(MouseButton button, ButtonState state) { getInstance()->setMouseButtonStateImpl(button, state); };
+        static void setMousePos(double x, double y) { getInstance()->setMousePosImpl(x, y); };
+        static void setMouseScroll(double x, double y) { getInstance()->setMouseScrollImpl(x, y); };
         // TODO: set joystick/controller button state
     private:
         void setKeyStateImpl(Key keycode, KeyState state);
         void setMouseButtonStateImpl(MouseButton button, ButtonState state);
+        void setMousePosImpl(double x, double y);
+        void setMouseScrollImpl(double x, double y);
         // TODO: set joystick/controller button state impl
     private:
         Input();
@@ -59,5 +69,6 @@ namespace Alkahest
         static Input *m_pInstance;
         std::unordered_map<Key, KeyState> m_keys;
         std::unordered_map<MouseButton, ButtonState> m_buttons;
+        double m_mouseX, m_mouseY, m_scrollX, m_scrollY;
     };
 }

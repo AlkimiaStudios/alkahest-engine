@@ -80,6 +80,16 @@ namespace Alkahest
         return state == m_buttons.end() ? ButtonState::ButtonUp : state->second;
     }
 
+    std::pair<double, double> Input::getMousePosImpl()
+    {
+        return std::pair<double, double>(m_mouseX, m_mouseY);
+    }
+
+    std::pair<double, double> Input::getMouseScrollImpl()
+    {
+        return std::pair<double, double>(m_scrollX, m_scrollY);
+    }
+
     float Input::getAxisImpl(Axis axis)
     {
         // TODO: axis polling impl
@@ -98,6 +108,29 @@ namespace Alkahest
 
     void Input::setMouseButtonStateImpl(MouseButton button, ButtonState state)
     {
+        std::stringstream ss;
+        ss << "Setting button [" << button << "] to state [" << state << "]";
+        logTrace(ss.str());
         m_buttons.insert_or_assign(button, state);
+        if (m_buttons.find(button)->second != state)
+            logError("Buttonstate mismatch");
+    }
+
+    void Input::setMousePosImpl(double x, double y)
+    {
+        m_mouseX = x;
+        m_mouseY = y;
+        std::stringstream ss;
+        ss << "Setting mouse position to (" << x << ", " << y << ")";
+        logTrace(ss.str());
+    }
+
+    void Input::setMouseScrollImpl(double x, double y)
+    {
+        m_scrollX = x;
+        m_scrollY = y;
+        std::stringstream ss;
+        ss << "Setting mouse scroll to (" << x << ", " << y << ")";
+        logTrace(ss.str());
     }
 }
