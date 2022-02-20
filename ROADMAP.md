@@ -11,21 +11,13 @@ completed for the Alkahest engine.
 * [X] Event Dispatcher
 * [X] Basic Window Creation
 * [X] Networking
-* [ ] Static Input Polling
-* [ ] Layer System
-* [ ] Maths Library
-  * [ ] Vector2
-  * [ ] Vector3
-  * [ ] Vector4
-  * [ ] 3x3 Matrix
-  * [ ] 4x4 Matrix
-  * [ ] Ray
-  * [ ] Quaternion
-  * [ ] Various Utility Functions
-* [ ] Use GLM instead of homebrewed math library?
+* [X] Static Input Polling
+* [ ] Implement GLM
 * [ ] Rendering
 * [ ] Textures
+* [ ] Layer System
 * [ ] Serialization
 * [ ] Entity Component System
+* [ ] Joystick/Controller Support
 * [ ] Tooling
 * [ ] Scripting
