@@ -3,6 +3,8 @@
 #include "../../macros.h"
 #include "keys.h"
 
+#include <glm/vec2.hpp>
+
 namespace Alkahest
 {
     class API Input
@@ -25,8 +27,13 @@ namespace Alkahest
         static bool isMouseButtonHeld(MouseButton button) { return getInstance()->isMouseButtonHeldImpl(button); };
         static ButtonState getMouseButtonState(MouseButton button) { return getInstance()->getMouseButtonStateImpl(button); };
 
-        static std::pair<double, double> getMousePos() { return getInstance()->getMousePosImpl(); };
-        static std::pair<double, double> getMouseScroll() { return getInstance()->getMouseScrollImpl(); };
+        static glm::vec2 getMousePos() { return getInstance()->getMousePosImpl(); };
+        static double getMouseX() { return getInstance()->getMousePosImpl().x; };
+        static double getMouseY() { return getInstance()->getMousePosImpl().y; };
+
+        static glm::vec2 getMouseScroll() { return getInstance()->getMouseScrollImpl(); };
+        static double getMouseScrollX() { return getInstance()->getMouseScrollImpl().x; };
+        static double getMouseScrollY() { return getInstance()->getMouseScrollImpl().y; };
 
         // Joystick Axis
         static float getAxis(Axis axis) { return getInstance()->getAxisImpl(axis); };
@@ -44,8 +51,8 @@ namespace Alkahest
         bool isMouseButtonHeldImpl(MouseButton button);
         ButtonState getMouseButtonStateImpl(MouseButton button);
 
-        std::pair<double, double> getMousePosImpl();
-        std::pair<double, double> getMouseScrollImpl();
+        glm::vec2 getMousePosImpl();
+        glm::vec2 getMouseScrollImpl();
 
         float getAxisImpl(Axis axis);
 

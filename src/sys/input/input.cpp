@@ -80,14 +80,14 @@ namespace Alkahest
         return state == m_buttons.end() ? ButtonState::ButtonUp : state->second;
     }
 
-    std::pair<double, double> Input::getMousePosImpl()
+    glm::vec2 Input::getMousePosImpl()
     {
-        return std::pair<double, double>(m_mouseX, m_mouseY);
+        return { m_mouseX, m_mouseY };
     }
 
-    std::pair<double, double> Input::getMouseScrollImpl()
+    glm::vec2 Input::getMouseScrollImpl()
     {
-        return std::pair<double, double>(m_scrollX, m_scrollY);
+        return { m_scrollX, m_scrollY };
     }
 
     float Input::getAxisImpl(Axis axis)

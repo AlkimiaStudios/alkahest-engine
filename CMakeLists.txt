@@ -76,6 +76,7 @@ endif (OPENGL_FOUND)
 set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 set(GLFW_DIR "${LIB_DIR}/glfw")
 set(GL3W_DIR "${LIB_DIR}/gl3w")
+set(GLM_DIR "${LIB_DIR}/glm")
 
 # Disable unwanted GLFW features
 set(GLFW_BUILD_EXAMPLES OFF CACHE INTERNAL "Build the GLFW example programs")
@@ -92,6 +93,7 @@ execute_process(COMMAND python3 gl3w_gen.py --root ${PROJECT_BINARY_DIR}/lib/gl3
 # Build submodules
 add_subdirectory(${GLFW_DIR})
 add_subdirectory(${GL3W_DIR})
+add_subdirectory(${GLM_DIR})
 
 # Add executable to build
 add_library(alkahest SHARED)
@@ -117,6 +119,10 @@ target_link_libraries(alkahest PRIVATE "glfw" "${GLFW_LIBRARIES}")
 target_include_directories(alkahest PRIVATE "${GLFW_DIR}/include")
 target_compile_definitions(alkahest PRIVATE "GLFW_INCLUDE_NONE")
 
-# Link gl3wsource_files
+# Link gl3w source_files
 target_link_libraries(alkahest PRIVATE "gl3w")
 target_include_directories(alkahest PRIVATE "${GL3W_DIR}/include")
+
+# Link GLM
+target_link_libraries(alkahest PRIVATE "glm")
+target_include_directories(alkahest PRIVATE "${GLM_DIR}")

@@ -12,7 +12,7 @@ completed for the Alkahest engine.
 * [X] Basic Window Creation
 * [X] Networking
 * [X] Static Input Polling
-* [ ] Implement GLM
+* [X] Implement GLM
 * [ ] Rendering
 * [ ] Textures
 * [ ] Layer System
