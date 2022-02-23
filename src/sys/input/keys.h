@@ -1,14 +1,6 @@
 #pragma once
 
-#if defined SOME_DIRECTX_MACRO
-
-#elif defined SOME_VULKAN_MACRO
-
-#elif defined SOME_OTHER_MACRO
-
-#else // OpenGL Fallback
 #include <GLFW/glfw3.h>
-#endif
 
 namespace Alkahest
 {

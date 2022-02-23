@@ -10,6 +10,12 @@
 // AlkahestEngine is heading. In the meantime, however, thank you to Yan for
 // providing one of the most educational channels on YT when it comes to C++
 // and OpenGL development.
+//
+// In compliance with the Hazel license, a copy of said license is available at
+// {project_root}/.licenses/Hazel.LICENSE
+//
+// The code within this file has been modified from the original source, and
+// this notice is provided in compliance with the above license terms.
 
 namespace Alkahest
 {

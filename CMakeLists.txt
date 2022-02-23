@@ -13,8 +13,8 @@ file(
     "${source_dir}/net/*.cpp"
     "${source_dir}/sys/events/*.cpp"
     "${source_dir}/sys/log/*.cpp"
-    "${source_dir}/sys/input/*.cpp"
     "${source_dir}/sys/window/*.cpp"
+    "${source_dir}/sys/input/*.cpp"
 )
 
 # "Library" for project options / C++ standard
@@ -115,14 +115,14 @@ set_api_flags(alkahest)
 target_compile_definitions(alkahest PRIVATE LOGGING_LEVEL_ALL)
 
 # Link GLFW
-target_link_libraries(alkahest PRIVATE "glfw" "${GLFW_LIBRARIES}")
-target_include_directories(alkahest PRIVATE "${GLFW_DIR}/include")
-target_compile_definitions(alkahest PRIVATE "GLFW_INCLUDE_NONE")
+target_link_libraries(alkahest PUBLIC "glfw" "${GLFW_LIBRARIES}")
+target_include_directories(alkahest PUBLIC "${GLFW_DIR}/include")
+target_compile_definitions(alkahest PUBLIC "GLFW_INCLUDE_NONE")
 
 # Link gl3w source_files
 target_link_libraries(alkahest PRIVATE "gl3w")
 target_include_directories(alkahest PRIVATE "${GL3W_DIR}/include")
 
 # Link GLM
-target_link_libraries(alkahest PRIVATE "glm")
-target_include_directories(alkahest PRIVATE "${GLM_DIR}")
+target_link_libraries(alkahest PUBLIC "glm")
+target_include_directories(alkahest PUBLIC "${GLM_DIR}")
