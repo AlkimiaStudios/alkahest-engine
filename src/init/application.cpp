@@ -48,6 +48,9 @@ namespace Alkahest
     Application::~Application() {
         m_dispatcher->stop();
         m_eventThread.join();
+        
+        m_dispatcher.release();
+        m_window.release();
     }
 
     // Not overridden, use to instantiate engine subsystems

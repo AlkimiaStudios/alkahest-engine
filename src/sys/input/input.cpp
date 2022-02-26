@@ -98,9 +98,7 @@ namespace Alkahest
 
     void Input::setKeyStateImpl(Key keycode, KeyState state)
     {
-        std::stringstream ss;
-        ss << "Setting key [" << keycode << "] to state [" << state << "]";
-        logTrace(ss.str());
+        logTrace("Setting key [{}] to state [{}]", keycode, state);
         m_keys.insert_or_assign(keycode, state);
         if (m_keys.find(keycode)->second != state)
             logError("Keystate mismatch");
@@ -108,9 +106,7 @@ namespace Alkahest
 
     void Input::setMouseButtonStateImpl(MouseButton button, ButtonState state)
     {
-        std::stringstream ss;
-        ss << "Setting button [" << button << "] to state [" << state << "]";
-        logTrace(ss.str());
+        logTrace("Setting button [{}] to state [{}]", button, state);
         m_buttons.insert_or_assign(button, state);
         if (m_buttons.find(button)->second != state)
             logError("Buttonstate mismatch");
@@ -120,17 +116,13 @@ namespace Alkahest
     {
         m_mouseX = x;
         m_mouseY = y;
-        std::stringstream ss;
-        ss << "Setting mouse position to (" << x << ", " << y << ")";
-        logTrace(ss.str());
+        logTrace("Setting mouse position to ({}, {})", x, y);
     }
 
     void Input::setMouseScrollImpl(double x, double y)
     {
         m_scrollX = x;
         m_scrollY = y;
-        std::stringstream ss;
-        ss << "Setting mouse scroll to (" << x << ", " << y << ")";
-        logTrace(ss.str());
+        logTrace("Setting mouse scroll to ({}, {})", x, y);
     }
 }

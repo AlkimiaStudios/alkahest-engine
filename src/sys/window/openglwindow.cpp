@@ -4,6 +4,7 @@
 #include "../events/keyevent.h"
 #include "../events/mouseevent.h"
 #include "../input/input.h"
+#include <cmath>
 
 // Much of the early systems developed for AlkahestEngine were developed following
 // along with the Game Engine series from The Cherno (Yan Chernikov) as he built
@@ -25,7 +26,7 @@ namespace Alkahest
 
     static void handleGLFWError(int e, const char *msg)
     {
-        logError("GLFW Error (Code " + std::to_string(e) + "): " + msg);
+        logError("GLFW Error (Code {}): {}", e, msg);
     }
 
     IWindow* IWindow::create(const WindowProps& props)
@@ -45,6 +46,12 @@ namespace Alkahest
 
     void OpenGLWindow::onUpdate()
     {
+        glEnableVertexAttribArray(0);
+        glBindBuffer(GL_VERTEX_ARRAY, m_vertex_buffer);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, static_cast<void*>(0));
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDisableVertexAttribArray(0);
+
         glfwSwapBuffers(m_window);
         glfwPollEvents();
     }
@@ -95,7 +102,7 @@ namespace Alkahest
         m_data.width = props.width;
         m_data.height = props.height;
 
-        logTrace("Creating window " + m_data.title + ": (" + std::to_string(m_data.width) + "x" + std::to_string(m_data.height) + ")");
+        logTrace("Creating window {}: ({},{})", m_data.title, m_data.width, m_data.height);
 
         glfwWindowHintString(GLFW_X11_CLASS_NAME, "alkahest");
         glfwWindowHintString(GLFW_X11_INSTANCE_NAME, "alkahest");
@@ -107,6 +114,14 @@ namespace Alkahest
         if (glfwRawMouseMotionSupported())
             glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
         setVSync(true);
+
+        int width, height;
+        glfwGetFramebufferSize(m_window, &width, &height);
+        glViewport(0, 0, width, height);
+
+        glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow* window, int width, int height){
+            glViewport(0, 0, width, height);
+        });
 
         glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height){
             WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
@@ -138,10 +153,21 @@ namespace Alkahest
         glfwSetScrollCallback(m_window, [](GLFWwindow* window, double x, double y){
             Input::setMouseScroll(x, y);
         });
+
+        static const GLfloat g_vertex_buffer_data[] = {
+            -0.3f, -0.5f * static_cast<float>(std::sqrt(3)) / 3, 0.0f,
+            0.3f, -0.5f * static_cast<float>(std::sqrt(3)) / 3, 0.0f,
+            0.0f,  0.5f * static_cast<float>(std::sqrt(3)) * 2 / 3, 0.0f,
+        };
+
+        glGenBuffers(1, &m_vertex_buffer);
+        glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
     }
 
     void OpenGLWindow::shutdown()
     {
         glfwDestroyWindow(m_window);
+        glfwTerminate();
     }
 }

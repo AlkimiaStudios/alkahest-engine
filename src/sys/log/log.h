@@ -41,13 +41,50 @@ namespace Alkahest
         constexpr log_level LOG_LEVEL_CUTOFF = log_level::INFO;
     #endif
 
+    namespace _
+    {
+        void log(const std::string& message, const log_level level, bool color);
+    }
+
+    template<typename... Args>
+    void logTrace(const std::string& fmtStr, Args&&... args)
+    {
+        std::string message = fmt::vformat(fmtStr, fmt::make_format_args(args...));
+        _::log(message, log_level::TRACE, true);
+    };
+
+    template<typename... Args>
+    void logDebug(const std::string& fmtStr, Args&&... args)
+    {
+        std::string message = fmt::vformat(fmtStr, fmt::make_format_args(args...));
+        _::log(message, log_level::DEBUG, true);
+    };
+
+    template<typename... Args>
+    void logInfo(const std::string& fmtStr, Args&&... args)
+    {
+        std::string message = fmt::vformat(fmtStr, fmt::make_format_args(args...));
+        _::log(message, log_level::INFO, true);
+    };
+
+    template<typename... Args>
+    void logWarning(const std::string& fmtStr, Args&&... args)
+    {
+        std::string message = fmt::vformat(fmtStr, fmt::make_format_args(args...));
+        _::log(message, log_level::WARN, true);
+    };
+
+    template<typename... Args>
+    void logError(const std::string& fmtStr, Args&&... args)
+    {
+        std::string message = fmt::vformat(fmtStr, fmt::make_format_args(args...));
+        _::log(message, log_level::ERROR, true);
+    };
+
+    // Overload for simple string logging
     API void logTrace(const std::string& message, const bool color = true);
-
     API void logDebug(const std::string& message, const bool color = true);
-
     API void logInfo(const std::string& message, const bool color = true);
-
     API void logWarning(const std::string& message, const bool color = true);
-
     API void logError(const std::string& message, const bool color = true);
 }

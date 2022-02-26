@@ -2,10 +2,9 @@
 
 namespace Alkahest
 {
-    namespace
+    namespace _
     {
         // Forward definitions
-        void log(const std::string& message, const log_level level, const bool color);
         void log(const std::string& message);
 
         std::string timestamp()
@@ -20,8 +19,8 @@ namespace Alkahest
                 gmt.tm_mday, gmt.tm_hour, gmt.tm_min, fractional_seconds.count());
             return buffer;
         }
-        
-        void log(const std::string& message, const log_level level, const bool color)
+
+        void log(const std::string& message, const log_level level, bool color)
         {
             if (level < LOG_LEVEL_CUTOFF)
                 return;
@@ -45,26 +44,26 @@ namespace Alkahest
 
     void logTrace(const std::string& message, const bool color)
     {
-        log(message, log_level::TRACE, color);
+        _::log(message, log_level::TRACE, color);
     }
 
     void logDebug(const std::string& message, const bool color)
     {
-        log(message, log_level::DEBUG, color);
+        _::log(message, log_level::DEBUG, color);
     }
 
     void logInfo(const std::string& message, const bool color)
     {
-        log(message, log_level::INFO, color);
+        _::log(message, log_level::INFO, color);
     }
 
     void logWarning(const std::string& message, const bool color)
     {
-        log(message, log_level::WARN, color);
+        _::log(message, log_level::WARN, color);
     }
 
     void logError(const std::string& message, const bool color)
     {
-        log(message, log_level::ERROR, color);
+        _::log(message, log_level::ERROR, color);
     }
 }

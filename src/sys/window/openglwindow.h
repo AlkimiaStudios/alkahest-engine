@@ -59,5 +59,6 @@ namespace Alkahest
         };
         WindowData m_data;
         GLFWwindow *m_window;
+        GLuint m_vertex_buffer;
     };
 }

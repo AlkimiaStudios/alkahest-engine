@@ -121,7 +121,7 @@ namespace Alkahest
         if (m_eqInstance->count() == 0)
             return; // don't process if there are no events
 
-        logTrace("Events waiting in queue: " + std::to_string(m_eqInstance->count()));
+        logTrace("Events waiting in queue: {}", m_eqInstance->count());
         
         // Acquire lock to ensure atomicity
         std::unique_lock<std::mutex> l(eventDispatcherMutex);

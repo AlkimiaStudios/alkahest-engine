@@ -19,7 +19,7 @@ file(
 
 # "Library" for project options / C++ standard
 add_library(project_options INTERFACE)
-target_compile_features(project_options INTERFACE cxx_std_17)
+target_compile_features(project_options INTERFACE cxx_std_20)
 
 # "Library" for compiler warning flags
 add_library(project_warnings INTERFACE)
@@ -77,6 +77,7 @@ set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 set(GLFW_DIR "${LIB_DIR}/glfw")
 set(GL3W_DIR "${LIB_DIR}/gl3w")
 set(GLM_DIR "${LIB_DIR}/glm")
+set(FMT_DIR "${LIB_DIR}/fmt")
 
 # Disable unwanted GLFW features
 set(GLFW_BUILD_EXAMPLES OFF CACHE INTERNAL "Build the GLFW example programs")
@@ -90,10 +91,14 @@ set(OpenGL_GL_PREFERENCE GLVND)
 # Generate OpenGL profile in build dir
 execute_process(COMMAND python3 gl3w_gen.py --root ${PROJECT_BINARY_DIR}/lib/gl3w WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/gl3w)
 
+# Set PIC for fmt as a shared lib
+set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
+
 # Build submodules
 add_subdirectory(${GLFW_DIR})
 add_subdirectory(${GL3W_DIR})
 add_subdirectory(${GLM_DIR})
+add_subdirectory(${FMT_DIR})
 
 # Add executable to build
 add_library(alkahest SHARED)
@@ -126,3 +131,7 @@ target_include_directories(alkahest PRIVATE "${GL3W_DIR}/include")
 # Link GLM
 target_link_libraries(alkahest PUBLIC "glm")
 target_include_directories(alkahest PUBLIC "${GLM_DIR}")
+
+# Link fmt
+target_link_libraries(alkahest PUBLIC "fmt")
+target_include_directories(alkahest PUBLIC "${FMT_DIR}/include")
