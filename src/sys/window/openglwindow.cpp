@@ -4,7 +4,10 @@
 #include "../events/keyevent.h"
 #include "../events/mouseevent.h"
 #include "../input/input.h"
-#include <cmath>
+
+#include <glm/glm.hpp>
+#include<glm/gtc/matrix_transform.hpp>
+#include<glm/gtc/type_ptr.hpp>
 
 // Much of the early systems developed for AlkahestEngine were developed following
 // along with the Game Engine series from The Cherno (Yan Chernikov) as he built
@@ -46,11 +49,50 @@ namespace Alkahest
 
     void OpenGLWindow::onUpdate()
     {
-        glEnableVertexAttribArray(0);
-        glBindBuffer(GL_VERTEX_ARRAY, m_vertex_buffer);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, static_cast<void*>(0));
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        glDisableVertexAttribArray(0);
+        // Specify the color of the background
+		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
+		// Clean the back buffer and assign the new color to it
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // Tell OpenGL which program to use
+        m_shaderProgram->activate();
+
+        // Basic 60fps ticks
+        double ct = glfwGetTime();
+        if (ct - m_prevTime >= 1/60)
+        {
+            m_rotation += 0.5f;
+            m_prevTime = ct;
+        }
+
+        glm::mat4 m = glm::mat4(1.0f);
+        glm::mat4 v = glm::mat4(1.0f);
+        glm::mat4 p = glm::mat4(1.0f);
+
+        m = glm::rotate(m, glm::radians(m_rotation), glm::vec3(0.0f, 1.0f, 0.0f));
+        v = glm::translate(v, glm::vec3(0.0f, -0.5f, -2.0f));
+        int width, height;
+        glfwGetFramebufferSize(m_window, &width, &height);
+        p = glm::perspective(glm::radians(45.0f), static_cast<float>(width / height), 0.1f, 100.0f);
+
+        GLint mLoc = glGetUniformLocation(m_shaderProgram->getID(), "model");
+        glUniformMatrix4fv(mLoc, 1, GL_FALSE, glm::value_ptr(m));
+        GLint vLoc = glGetUniformLocation(m_shaderProgram->getID(), "view");
+        glUniformMatrix4fv(vLoc, 1, GL_FALSE, glm::value_ptr(v));
+        GLint pLoc = glGetUniformLocation(m_shaderProgram->getID(), "projection");
+        glUniformMatrix4fv(pLoc, 1, GL_FALSE, glm::value_ptr(p));
+
+        // Bind the VAO
+        m_vao->bind();
+
+        // Bind texture so it is displayed
+        m_tex->bind();
+
+        // Set scale
+        glUniform1f(m_scale, 0.5f);
+
+        // Draw elements: primitives, number of elements, type of indices, starting index
+        glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(m_window);
         glfwPollEvents();
@@ -154,19 +196,66 @@ namespace Alkahest
             Input::setMouseScroll(x, y);
         });
 
-        static const GLfloat g_vertex_buffer_data[] = {
-            -0.3f, -0.5f * static_cast<float>(std::sqrt(3)) / 3, 0.0f,
-            0.3f, -0.5f * static_cast<float>(std::sqrt(3)) / 3, 0.0f,
-            0.0f,  0.5f * static_cast<float>(std::sqrt(3)) * 2 / 3, 0.0f,
+        m_shaderProgram = Shader::create("shaders/default.vert", "shaders/default.frag");
+
+        std::vector<Vertex> vertices = {
+        //     COORDINATES     /        COLORS      /   TexCoord  //
+            {{-0.5f, 0.0f,  0.5f},     {0.83f, 0.70f, 0.44f},	{0.0f, 0.0f}},
+            {{-0.5f, 0.0f, -0.5f},     {0.83f, 0.70f, 0.44f},	{5.0f, 0.0f}},
+            {{0.5f, 0.0f, -0.5f},     {0.83f, 0.70f, 0.44f},	{0.0f, 0.0f}},
+            {{0.5f, 0.0f,  0.5f},     {0.83f, 0.70f, 0.44f},	{5.0f, 0.0f}},
+            {{0.0f, 0.8f,  0.0f},     {0.92f, 0.86f, 0.76f},	{2.5f, 5.0f}}
         };
 
-        glGenBuffers(1, &m_vertex_buffer);
-        glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+        // Indices for vertices order
+        std::vector<GLuint> indices =
+        {
+            0, 1, 2,
+            0, 2, 3,
+            0, 1, 4,
+            1, 2, 4,
+            2, 3, 4,
+            3, 0, 4
+        };
+
+        m_vao = VertexArray::create();
+        m_vao->bind();
+
+        // Generate the VBO and EBO
+        m_vbo = VertexBuffer::create(vertices);
+        m_ebo = ElementBuffer::create(indices);
+
+        m_vao->linkAttribute(m_vbo, 0, 3, GL_FLOAT, sizeof(Vertex), static_cast<void*>(0));
+        m_vao->linkAttribute(m_vbo, 1, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(3 * sizeof(GL_FLOAT)));
+        m_vao->linkAttribute(m_vbo, 2, 2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(6 * sizeof(GL_FLOAT)));
+
+        // Re-bind the VAO and VBO to 0 so we don't accidentally modify them
+        m_vao->unbind();
+        m_vbo->unbind();
+
+        // Re-bind the EBO *after* the VAO because the VAO is using the EBO
+        m_ebo->unbind();
+
+        m_scale = glGetUniformLocation(m_shaderProgram->getID(), "scale");
+
+        m_tex = Texture::create("assets/textures/brick.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+        m_tex->setUniformTexture(m_shaderProgram, "tex0", 0);
+
+        glEnable(GL_DEPTH_TEST);
+
+        m_rotation = 0.0f;
+        m_prevTime = glfwGetTime();
     }
 
     void OpenGLWindow::shutdown()
     {
+        // cleanup
+        m_vao->destroy();
+        m_vbo->destroy();
+        m_ebo->destroy();
+        m_tex->destroy();
+        m_shaderProgram->destroy();
+
         glfwDestroyWindow(m_window);
         glfwTerminate();
     }

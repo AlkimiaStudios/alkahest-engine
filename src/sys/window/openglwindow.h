@@ -3,6 +3,10 @@
 #include "../../macros.h"
 #include "window.h"
 #include "../events/event.h"
+#include "../render/shader.h"
+#include "../render/vertexarray.h"
+#include "../render/buffer.h"
+#include "../render/texture.h"
 
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
@@ -59,6 +63,14 @@ namespace Alkahest
         };
         WindowData m_data;
         GLFWwindow *m_window;
-        GLuint m_vertex_buffer;
+
+        Ref<Shader> m_shaderProgram;
+        Ref<VertexArray> m_vao;
+        Ref<VertexBuffer> m_vbo;
+        Ref<ElementBuffer> m_ebo;
+        GLuint m_scale;
+        Ref<Texture> m_tex;
+        float m_rotation;
+        double m_prevTime;
     };
 }

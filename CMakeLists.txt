@@ -15,11 +15,13 @@ file(
     "${source_dir}/sys/log/*.cpp"
     "${source_dir}/sys/window/*.cpp"
     "${source_dir}/sys/input/*.cpp"
+    "${source_dir}/sys/render/*.cpp"
+    "${source_dir}/sys/render/opengl/*.cpp"
 )
 
 # "Library" for project options / C++ standard
 add_library(project_options INTERFACE)
-target_compile_features(project_options INTERFACE cxx_std_20)
+target_compile_features(project_options INTERFACE cxx_std_17)
 
 # "Library" for compiler warning flags
 add_library(project_warnings INTERFACE)
@@ -78,6 +80,7 @@ set(GLFW_DIR "${LIB_DIR}/glfw")
 set(GL3W_DIR "${LIB_DIR}/gl3w")
 set(GLM_DIR "${LIB_DIR}/glm")
 set(FMT_DIR "${LIB_DIR}/fmt")
+set(STB_DIR "${LIB_DIR}/stb")
 
 # Disable unwanted GLFW features
 set(GLFW_BUILD_EXAMPLES OFF CACHE INTERNAL "Build the GLFW example programs")
@@ -99,6 +102,7 @@ add_subdirectory(${GLFW_DIR})
 add_subdirectory(${GL3W_DIR})
 add_subdirectory(${GLM_DIR})
 add_subdirectory(${FMT_DIR})
+add_subdirectory(${STB_DIR})
 
 # Add executable to build
 add_library(alkahest SHARED)
@@ -135,3 +139,25 @@ target_include_directories(alkahest PUBLIC "${GLM_DIR}")
 # Link fmt
 target_link_libraries(alkahest PUBLIC "fmt")
 target_include_directories(alkahest PUBLIC "${FMT_DIR}/include")
+
+# Add include directory for STB Image
+target_link_libraries(alkahest PUBLIC "stb")
+target_include_directories(alkahest PUBLIC "${STB_DIR}")
+
+#
+# Post-Build
+#
+
+# Copy shader and asset files into build directory
+add_custom_command(
+    TARGET alkahest POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${source_dir}/sys/render/opengl/shaders ${CMAKE_BINARY_DIR}/shaders
+    COMMENT "Copying engine shader files to build directory" VERBATIM
+)
+add_custom_command(
+    TARGET alkahest POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${PROJECT_SOURCE_DIR}/assets ${CMAKE_BINARY_DIR}/assets
+    COMMENT "Copying engine asset files to build directory" VERBATIM
+)

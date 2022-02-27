@@ -2,9 +2,11 @@
 
 #include <chrono>
 #include <ctime>
+#include <cerrno>
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <fstream>
 #include <fmt/format.h>
 #include <unordered_map>
 #include <functional>
