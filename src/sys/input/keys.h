@@ -17,6 +17,12 @@ namespace Alkahest
     {
     };
 #else // OpenGL Fallback
+    enum InputMode
+    {
+        Normal = GLFW_CURSOR_NORMAL,
+        Hidden = GLFW_CURSOR_HIDDEN
+    };
+
     enum KeyState
     {
         KeyUp = GLFW_RELEASE,

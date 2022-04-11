@@ -4,6 +4,7 @@
 #include "../sys/window/window.h"
 #include "../sys/events/event.h"
 #include "../sys/events/eventqueue.h"
+#include "../sys/render/camera.h"
 
 // Much of the early systems developed for AlkahestEngine were developed following
 // along with the Game Engine series from The Cherno (Yan Chernikov) as he built
@@ -34,6 +35,8 @@ namespace Alkahest
         std::unique_ptr<IWindow> m_window;
         std::unique_ptr<EventDispatcher> m_dispatcher;
         bool m_shouldStop = false;
+
+        Ref<Camera> m_mainCamera;
 
         using super = Application;
     private:

@@ -2,6 +2,8 @@
 
 #include "../../macros.h"
 #include "../events/event.h"
+#include "../input/keys.h"
+#include "../render/camera.h"
 
 // Much of the early systems developed for AlkahestEngine were developed following
 // along with the Game Engine series from The Cherno (Yan Chernikov) as he built
@@ -40,6 +42,8 @@ namespace Alkahest
         virtual void setVSync(bool vsync) = 0;
         virtual bool isVSync() const = 0;
         virtual void setEventCallback(std::function<void(Event*)> e) = 0;
+        virtual void setMainCamera(Ref<Camera> c) = 0;
+        virtual void setInputMode(InputMode mode) = 0;
 
         static IWindow* create(const WindowProps& props = WindowProps());
     };

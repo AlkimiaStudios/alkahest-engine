@@ -6,7 +6,6 @@
 #include "../input/input.h"
 
 #include <glm/glm.hpp>
-#include<glm/gtc/matrix_transform.hpp>
 #include<glm/gtc/type_ptr.hpp>
 
 // Much of the early systems developed for AlkahestEngine were developed following
@@ -65,22 +64,11 @@ namespace Alkahest
             m_prevTime = ct;
         }
 
-        glm::mat4 m = glm::mat4(1.0f);
-        glm::mat4 v = glm::mat4(1.0f);
-        glm::mat4 p = glm::mat4(1.0f);
-
-        m = glm::rotate(m, glm::radians(m_rotation), glm::vec3(0.0f, 1.0f, 0.0f));
-        v = glm::translate(v, glm::vec3(0.0f, -0.5f, -2.0f));
         int width, height;
         glfwGetFramebufferSize(m_window, &width, &height);
-        p = glm::perspective(glm::radians(45.0f), static_cast<float>(width / height), 0.1f, 100.0f);
-
-        GLint mLoc = glGetUniformLocation(m_shaderProgram->getID(), "model");
-        glUniformMatrix4fv(mLoc, 1, GL_FALSE, glm::value_ptr(m));
-        GLint vLoc = glGetUniformLocation(m_shaderProgram->getID(), "view");
-        glUniformMatrix4fv(vLoc, 1, GL_FALSE, glm::value_ptr(v));
-        GLint pLoc = glGetUniformLocation(m_shaderProgram->getID(), "projection");
-        glUniformMatrix4fv(pLoc, 1, GL_FALSE, glm::value_ptr(p));
+        glm::mat4 viewMatrix = m_cam->getViewMatrix(45.0f, static_cast<float>(width / height), 0.1f, 100.0f);
+        GLint vmLoc = glGetUniformLocation(m_shaderProgram->getID(), "viewMatrix");
+        glUniformMatrix4fv(vmLoc, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 
         // Bind the VAO
         m_vao->bind();
@@ -245,6 +233,11 @@ namespace Alkahest
 
         m_rotation = 0.0f;
         m_prevTime = glfwGetTime();
+    }
+
+    void OpenGLWindow::setInputMode(InputMode mode)
+    {
+        glfwSetInputMode(m_window, GLFW_CURSOR, mode);
     }
 
     void OpenGLWindow::shutdown()

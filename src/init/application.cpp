@@ -66,6 +66,9 @@ namespace Alkahest
         logTrace("Creating initial window...");
         m_window = std::unique_ptr<IWindow>(IWindow::create());
         m_window->setEventCallback(Application::onEvent);
+
+        m_mainCamera = Camera::create({0.0f, 0.0f, 2.0f});
+        m_window->setMainCamera(m_mainCamera);
     }
 
     // To be overridden in client, define custom systems, etc

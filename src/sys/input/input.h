@@ -57,7 +57,7 @@ namespace Alkahest
         float getAxisImpl(Axis axis);
 
         // TODO: controller support impl
-    private:
+    public:
         static void setKeyState(Key keycode, KeyState state) { getInstance()->setKeyStateImpl(keycode, state); };
         static void setMouseButtonState(MouseButton button, ButtonState state) { getInstance()->setMouseButtonStateImpl(button, state); };
         static void setMousePos(double x, double y) { getInstance()->setMousePosImpl(x, y); };

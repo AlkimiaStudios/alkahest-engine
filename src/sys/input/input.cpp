@@ -22,6 +22,9 @@ namespace Alkahest
 
     bool Input::isKeyDownImpl(Key keycode)
     {
+        // TODO: figure out how to not register multiple presses
+        // without setting the state back to KeyUp...
+        /*
         bool down = getKeyStateImpl(keycode) == KeyState::KeyDown;
         
         // If the key is down, we set it back to up to avoid accidentally
@@ -31,6 +34,9 @@ namespace Alkahest
 
         // ...and then we return the initial value;
         return down;
+        */
+
+       return getKeyStateImpl(keycode) == KeyState::KeyDown;
     }
 
     bool Input::isKeyUpImpl(Key keycode)
@@ -40,7 +46,7 @@ namespace Alkahest
 
     bool Input::isKeyHeldImpl(Key keycode)
     {
-        return getKeyStateImpl(keycode) == KeyState::KeyHeld;
+        return getKeyStateImpl(keycode) == KeyState::KeyHeld || getKeyStateImpl(keycode) == KeyState::KeyDown;
     }
 
     KeyState Input::getKeyStateImpl(Key keycode)
@@ -53,6 +59,9 @@ namespace Alkahest
 
     bool Input::isMouseButtonDownImpl(MouseButton button)
     {
+        // TODO: figure out how to not register multiple presses
+        // without setting the state back to KeyUp...
+        /*
         bool down = getMouseButtonStateImpl(button) == ButtonState::ButtonDown;
 
         // If the key is down, we set it back to up to avoid accidentally
@@ -62,6 +71,9 @@ namespace Alkahest
 
         // ...and then we return the initial value;
         return down;
+        */
+
+       return getMouseButtonStateImpl(button) == ButtonState::ButtonDown;
     }
 
     bool Input::isMouseButtonUpImpl(MouseButton button)
@@ -71,7 +83,7 @@ namespace Alkahest
 
     bool Input::isMouseButtonHeldImpl(MouseButton button)
     {
-        return getMouseButtonStateImpl(button) == ButtonState::ButtonHeld;
+        return getMouseButtonStateImpl(button) == ButtonState::ButtonHeld || getMouseButtonStateImpl(button) == ButtonState::ButtonDown;
     }
 
     ButtonState Input::getMouseButtonStateImpl(MouseButton button)

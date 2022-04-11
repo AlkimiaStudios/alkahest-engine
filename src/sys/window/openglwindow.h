@@ -3,16 +3,21 @@
 #include "../../macros.h"
 #include "window.h"
 #include "../events/event.h"
+#include "../input/keys.h"
 #include "../render/shader.h"
 #include "../render/vertexarray.h"
 #include "../render/buffer.h"
 #include "../render/texture.h"
+#include "../render/camera.h"
 
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 
+#define ALKAHEST_CURSOR_MODE_NORMAL GLFW_CURSOR_NORMAL
+#define ALKAHEST_CURSOR_MODE_HIDDEN GLFW_CURSOR_HIDDEN
+
 #ifndef ALKAHEST_CURSOR_MODE
-#define ALKAHEST_CURSOR_MODE GLFW_CURSOR_NORMAL
+#define ALKAHEST_CURSOR_MODE ALKAHEST_CURSOR_MODE_NORMAL
 #endif
 
 #ifndef ALKAHEST_RAW_MOTION
@@ -50,9 +55,12 @@ namespace Alkahest
         virtual bool isVSync() const override;
 
         virtual inline void setEventCallback(std::function<void(Event*)> func) { m_data.eventCallback = func; };
+        virtual inline void setMainCamera(Ref<Camera> c) { m_cam = c; };
+        virtual void setInputMode(InputMode mode) override;
     private:
         void init(const WindowProps& props);
         void shutdown();
+
 
         struct WindowData {
             std::string title;
@@ -70,6 +78,7 @@ namespace Alkahest
         Ref<ElementBuffer> m_ebo;
         GLuint m_scale;
         Ref<Texture> m_tex;
+        Ref<Camera> m_cam;
         float m_rotation;
         double m_prevTime;
     };
