@@ -76,9 +76,6 @@ namespace Alkahest
         // Bind texture so it is displayed
         m_tex->bind();
 
-        // Set scale
-        glUniform1f(m_scale, 0.5f);
-
         // Draw elements: primitives, number of elements, type of indices, starting index
         glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);
 
@@ -141,8 +138,8 @@ namespace Alkahest
         glfwMakeContextCurrent(m_window);
         glfwSetWindowUserPointer(m_window, &m_data);
         glfwSetInputMode(m_window, GLFW_CURSOR, ALKAHEST_CURSOR_MODE);
-        if (glfwRawMouseMotionSupported())
-            glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+        //if (glfwRawMouseMotionSupported())
+            //glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
         setVSync(true);
 
         int width, height;

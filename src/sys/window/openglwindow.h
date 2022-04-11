@@ -57,6 +57,7 @@ namespace Alkahest
         virtual inline void setEventCallback(std::function<void(Event*)> func) { m_data.eventCallback = func; };
         virtual inline void setMainCamera(Ref<Camera> c) { m_cam = c; };
         virtual void setInputMode(InputMode mode) override;
+        virtual inline GLFWwindow* getWindowImpl() { return m_window; };
     private:
         void init(const WindowProps& props);
         void shutdown();

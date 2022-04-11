@@ -32,6 +32,6 @@ namespace Alkahest
         glm::vec3 m_up = glm::vec3(0.0f, 1.0f, 0.0f);
 
         float m_speed = 0.1f;
-        float m_sens = 1.0f;
+        float m_sens = 100.0f;
     };
 }
