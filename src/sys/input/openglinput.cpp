@@ -1,26 +1,52 @@
-#include "input.h"
+#include "openglinput.h"
 #include "../log/log.h"
 
 namespace Alkahest
 {
+    bool Input::m_initialized = false;
     Input* Input::m_pInstance = nullptr;
+    void* Input::m_window = nullptr;
 
-    Input* Input::getInstance()
+    Input* Input::getInstance(void *window)
     {
-        if (m_pInstance == nullptr)
-            m_pInstance = new Input();
+        // If we have not been initiated yet and we weren't given a window,
+        // we return a dummy that will be destroyed
+        if (!m_initialized)
+        {
+            if (window != nullptr)
+            {
+                if (m_pInstance != nullptr)
+                    delete m_pInstance;
+                
+                m_pInstance = new OpenGLInput(reinterpret_cast<GLFWwindow*>(window));
+
+                m_initialized = true;
+            }
+            else
+            {
+                if (m_pInstance == nullptr)
+                    m_pInstance = new OpenGLInput(static_cast<GLFWwindow*>(0));
+            }
+        }
+        else
+        {
+            if (m_pInstance == nullptr)
+            {
+                logError("Input has been initialized but instance is nullptr!");
+                m_pInstance = new OpenGLInput(static_cast<GLFWwindow*>(0));
+            }
+        }
+
+
         return m_pInstance;
     }
 
-    Input::Input()
+    void Input::initialize(void *window)
     {
+        getInstance(window);
     }
 
-    Input::~Input()
-    {
-    }
-
-    bool Input::isKeyDownImpl(Key keycode)
+    bool OpenGLInput::isKeyDownImpl(Key keycode)
     {
         // TODO: figure out how to not register multiple presses
         // without setting the state back to KeyUp...
@@ -39,17 +65,17 @@ namespace Alkahest
        return getKeyStateImpl(keycode) == KeyState::KeyDown;
     }
 
-    bool Input::isKeyUpImpl(Key keycode)
+    bool OpenGLInput::isKeyUpImpl(Key keycode)
     {
         return getKeyStateImpl(keycode) == KeyState::KeyUp;
     }
 
-    bool Input::isKeyHeldImpl(Key keycode)
+    bool OpenGLInput::isKeyHeldImpl(Key keycode)
     {
         return getKeyStateImpl(keycode) == KeyState::KeyHeld || getKeyStateImpl(keycode) == KeyState::KeyDown;
     }
 
-    KeyState Input::getKeyStateImpl(Key keycode)
+    KeyState OpenGLInput::getKeyStateImpl(Key keycode)
     {
         std::unordered_map<Alkahest::Key, Alkahest::KeyState>::iterator state = m_keys.find(keycode);
         if (state == m_keys.end())
@@ -57,7 +83,7 @@ namespace Alkahest
         return state->second;
     }
 
-    bool Input::isMouseButtonDownImpl(MouseButton button)
+    bool OpenGLInput::isMouseButtonDownImpl(MouseButton button)
     {
         // TODO: figure out how to not register multiple presses
         // without setting the state back to KeyUp...
@@ -76,39 +102,39 @@ namespace Alkahest
        return getMouseButtonStateImpl(button) == ButtonState::ButtonDown;
     }
 
-    bool Input::isMouseButtonUpImpl(MouseButton button)
+    bool OpenGLInput::isMouseButtonUpImpl(MouseButton button)
     {
         return getMouseButtonStateImpl(button) == ButtonState::ButtonUp;
     }
 
-    bool Input::isMouseButtonHeldImpl(MouseButton button)
+    bool OpenGLInput::isMouseButtonHeldImpl(MouseButton button)
     {
         return getMouseButtonStateImpl(button) == ButtonState::ButtonHeld || getMouseButtonStateImpl(button) == ButtonState::ButtonDown;
     }
 
-    ButtonState Input::getMouseButtonStateImpl(MouseButton button)
+    ButtonState OpenGLInput::getMouseButtonStateImpl(MouseButton button)
     {
         auto state = m_buttons.find(button);
         return state == m_buttons.end() ? ButtonState::ButtonUp : state->second;
     }
 
-    glm::vec2 Input::getMousePosImpl()
+    glm::vec2 OpenGLInput::getMousePosImpl()
     {
         return { m_mouseX, m_mouseY };
     }
 
-    glm::vec2 Input::getMouseScrollImpl()
+    glm::vec2 OpenGLInput::getMouseScrollImpl()
     {
         return { m_scrollX, m_scrollY };
     }
 
-    float Input::getAxisImpl(Axis axis)
+    float OpenGLInput::getAxisImpl(Axis axis)
     {
         // TODO: axis polling impl
         return 0.0f;
     }
 
-    void Input::setKeyStateImpl(Key keycode, KeyState state)
+    void OpenGLInput::setKeyStateImpl(Key keycode, KeyState state)
     {
         logTrace("Setting key [{}] to state [{}]", keycode, state);
         m_keys.insert_or_assign(keycode, state);
@@ -116,7 +142,7 @@ namespace Alkahest
             logError("Keystate mismatch");
     }
 
-    void Input::setMouseButtonStateImpl(MouseButton button, ButtonState state)
+    void OpenGLInput::setMouseButtonStateImpl(MouseButton button, ButtonState state)
     {
         logTrace("Setting button [{}] to state [{}]", button, state);
         m_buttons.insert_or_assign(button, state);
@@ -124,14 +150,17 @@ namespace Alkahest
             logError("Buttonstate mismatch");
     }
 
-    void Input::setMousePosImpl(double x, double y)
+    void OpenGLInput::setMousePosImpl(double x, double y, bool propagate)
     {
         m_mouseX = x;
         m_mouseY = y;
         logTrace("Setting mouse position to ({}, {})", x, y);
+
+        if (propagate)
+            glfwSetCursorPos(reinterpret_cast<GLFWwindow*>(m_window), x, y);
     }
 
-    void Input::setMouseScrollImpl(double x, double y)
+    void OpenGLInput::setMouseScrollImpl(double x, double y)
     {
         m_scrollX = x;
         m_scrollY = y;

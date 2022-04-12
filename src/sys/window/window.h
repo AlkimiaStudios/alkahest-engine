@@ -2,7 +2,7 @@
 
 #include "../../macros.h"
 #include "../events/event.h"
-#include "../input/keys.h"
+#include "../input/input.h"
 #include "../render/camera.h"
 
 // Much of the early systems developed for AlkahestEngine were developed following
@@ -43,8 +43,8 @@ namespace Alkahest
         virtual bool isVSync() const = 0;
         virtual void setEventCallback(std::function<void(Event*)> e) = 0;
         virtual void setMainCamera(Ref<Camera> c) = 0;
+        virtual void initializeInput() = 0;
         virtual void setInputMode(InputMode mode) = 0;
-        virtual GLFWwindow* getWindowImpl() = 0;
 
         static IWindow* create(const WindowProps& props = WindowProps());
     };

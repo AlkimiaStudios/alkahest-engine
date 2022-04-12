@@ -1,5 +1,6 @@
 #include "application.h"
 
+#include "../sys/input/input.h"
 #include "../sys/log/log.h"
 
 // Much of the early systems developed for AlkahestEngine were developed following
@@ -66,7 +67,11 @@ namespace Alkahest
         logTrace("Creating initial window...");
         m_window = std::unique_ptr<IWindow>(IWindow::create());
         m_window->setEventCallback(Application::onEvent);
+        
+        logTrace("Initializing input system...");
+        m_window->initializeInput();
 
+        logTrace("Creating main camera...");
         m_mainCamera = Camera::create({0.0f, 0.0f, 2.0f});
         m_window->setMainCamera(m_mainCamera);
     }

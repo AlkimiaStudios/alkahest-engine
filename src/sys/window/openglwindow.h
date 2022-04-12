@@ -3,7 +3,7 @@
 #include "../../macros.h"
 #include "window.h"
 #include "../events/event.h"
-#include "../input/keys.h"
+#include "../input/input.h"
 #include "../render/shader.h"
 #include "../render/vertexarray.h"
 #include "../render/buffer.h"
@@ -56,8 +56,8 @@ namespace Alkahest
 
         virtual inline void setEventCallback(std::function<void(Event*)> func) { m_data.eventCallback = func; };
         virtual inline void setMainCamera(Ref<Camera> c) { m_cam = c; };
+        virtual inline void initializeInput() { Input::initialize(m_window); };
         virtual void setInputMode(InputMode mode) override;
-        virtual inline GLFWwindow* getWindowImpl() { return m_window; };
     private:
         void init(const WindowProps& props);
         void shutdown();

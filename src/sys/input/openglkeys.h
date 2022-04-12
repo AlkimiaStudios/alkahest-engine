@@ -4,45 +4,32 @@
 
 namespace Alkahest
 {
-#if defined SOME_DIRECTX_MACRO
-    enum Key
-    {
-    };
-#elif defined SOME_VULKAN_MACRO
-    enum Key
-    {
-    };
-#elif defined SOME_OTHER_MACRO
-    enum Key
-    {
-    };
-#else // OpenGL Fallback
-    enum InputMode
+    enum InputMode : uint32_t
     {
         Normal = GLFW_CURSOR_NORMAL,
         Hidden = GLFW_CURSOR_HIDDEN
     };
 
-    enum KeyState
+    enum KeyState : uint8_t
     {
         KeyUp = GLFW_RELEASE,
         KeyDown = GLFW_PRESS,
         KeyHeld = GLFW_REPEAT
     };
 
-    enum ButtonState
+    enum ButtonState : uint8_t
     {
         ButtonUp = GLFW_RELEASE,
         ButtonDown = GLFW_PRESS,
         ButtonHeld = GLFW_REPEAT
     };
 
-    enum Axis
+    enum Axis : uint8_t
     {
         // TODO: Joystick/controller axis support
     };
 
-    enum MouseButton
+    enum MouseButton : uint8_t
     {
         MouseButtonLeft = GLFW_MOUSE_BUTTON_1,
         MouseButtonRight = GLFW_MOUSE_BUTTON_2,
@@ -54,7 +41,7 @@ namespace Alkahest
         MouseButton8 = GLFW_MOUSE_BUTTON_8
     };
 
-    enum Key
+    enum Key : int16_t
     {
         /* The unknown key */
         Unknown = GLFW_KEY_UNKNOWN,
@@ -183,5 +170,4 @@ namespace Alkahest
         RightSuper = GLFW_KEY_RIGHT_SUPER,
         Menu = GLFW_KEY_MENU
     };
-#endif
 }
