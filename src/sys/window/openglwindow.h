@@ -77,10 +77,13 @@ namespace Alkahest
         Ref<VertexArray> m_vao;
         Ref<VertexBuffer> m_vbo;
         Ref<ElementBuffer> m_ebo;
-        GLuint m_scale;
+
+        Ref<Shader> m_lightShader;
+        Ref<VertexArray> m_lightVAO;
+        Ref<VertexBuffer> m_lightVBO;
+        Ref<ElementBuffer> m_lightEBO;
+
         Ref<Texture> m_tex;
         Ref<Camera> m_cam;
-        float m_rotation;
-        double m_prevTime;
     };
 }

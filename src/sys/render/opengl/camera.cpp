@@ -1,6 +1,8 @@
 #include "camera.h"
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <GL/gl3w.h>
 
 namespace Alkahest
 {
@@ -74,5 +76,10 @@ namespace Alkahest
         projection = glm::perspective(glm::radians(fov), aspectRatio, nearPlane, farPlane);
 
         return projection * view;
+    }
+
+    void OpenGLCamera::updateMatrixInShader(glm::mat4 camMatrix, Ref<Shader> shader, const char* uniform)
+    {
+        glUniformMatrix4fv(glGetUniformLocation(shader->getID(), uniform), 1, GL_FALSE, glm::value_ptr(camMatrix));
     }
 }
