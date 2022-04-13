@@ -6,7 +6,7 @@
 #include "../input/input.h"
 
 #include <glm/glm.hpp>
-#include<glm/gtc/type_ptr.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 // Much of the early systems developed for AlkahestEngine were developed following
 // along with the Game Engine series from The Cherno (Yan Chernikov) as he built
@@ -53,31 +53,12 @@ namespace Alkahest
 		// Clean the back buffer and assign the new color to it
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Tell OpenGL which program to use
-        m_shaderProgram->activate();
-
         int width, height;
         glfwGetFramebufferSize(m_window, &width, &height);
+        m_cam->getViewMatrix(45.0f, static_cast<float>(width / height), 0.1f, 100.0f);
 
-        glm::mat4 camMatrix = m_cam->getViewMatrix(45.0f, static_cast<float>(width / height), 0.1f, 100.0f);
-        m_cam->updateMatrixInShader(camMatrix, m_shaderProgram, "camMatrix");
-        glm::vec3 camPos = m_cam->getPosition();
-        glUniform3f(glGetUniformLocation(m_shaderProgram->getID(), "camPos"), camPos.x, camPos.y, camPos.z);
-
-        // Bind texture so it is displayed
-        m_tex->bind();
-
-        // Bind the VAO
-        m_vao->bind();
-
-        // Draw elements: primitives, number of elements, type of indices, starting index
-        glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);
-
-        m_lightShader->activate();
-        m_cam->updateMatrixInShader(camMatrix, m_lightShader, "camMatrix");
-        m_lightVAO->bind();
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
+        m_floor->draw(m_shaderProgram, m_cam);
+        
         glfwSwapBuffers(m_window);
         glfwPollEvents();
     }
@@ -137,8 +118,8 @@ namespace Alkahest
         glfwMakeContextCurrent(m_window);
         glfwSetWindowUserPointer(m_window, &m_data);
         glfwSetInputMode(m_window, GLFW_CURSOR, ALKAHEST_CURSOR_MODE);
-        //if (glfwRawMouseMotionSupported())
-            //glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+        if (glfwRawMouseMotionSupported())
+            glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
         setVSync(true);
 
         int width, height;
@@ -185,99 +166,18 @@ namespace Alkahest
 
         std::vector<Vertex> vertices = {
         //  Coordinates           /    Colors                /  TexCoords     /  Normals             //
-            {{-0.5f, 0.0f,  0.5f},     {0.83f, 0.70f, 0.44f},	{0.0f, 0.0f},   { 0.0f, -1.0f,  0.0f}}, // bottom
-            {{-0.5f, 0.0f, -0.5f},     {0.83f, 0.70f, 0.44f},	{0.0f, 5.0f},   { 0.0f, -1.0f,  0.0f}},
-            {{ 0.5f, 0.0f, -0.5f},     {0.83f, 0.70f, 0.44f},	{5.0f, 5.0f},   { 0.0f, -1.0f,  0.0f}},
-            {{ 0.5f, 0.0f,  0.5f},     {0.83f, 0.70f, 0.44f},	{5.0f, 0.0f},   { 0.0f, -1.0f,  0.0f}},
-
-            {{-0.5f, 0.0f,  0.5f},     {0.83f, 0.70f, 0.44f},	{0.0f, 0.0f},   {-0.8f,  0.5f,  0.0f}}, // left
-            {{-0.5f, 0.0f, -0.5f},     {0.83f, 0.70f, 0.44f},	{5.0f, 0.0f},   {-0.8f,  0.5f,  0.0f}},
-            {{ 0.0f, 0.8f,  0.0f},     {0.92f, 0.86f, 0.76f},	{2.5f, 5.0f},   {-0.8f,  0.5f,  0.0f}},
-
-            {{-0.5f, 0.0f, -0.5f},     {0.83f, 0.70f, 0.44f},	{5.0f, 0.0f},   { 0.0f,  0.5f, -0.8f}}, // back
-            {{ 0.5f, 0.0f, -0.5f},     {0.83f, 0.70f, 0.44f},	{0.0f, 0.0f},   { 0.0f,  0.5f, -0.8f}},
-            {{ 0.0f, 0.8f,  0.0f},     {0.92f, 0.86f, 0.76f},	{2.5f, 5.0f},   { 0.0f,  0.5f, -0.8f}},
-
-            {{ 0.5f, 0.0f, -0.5f},     {0.83f, 0.70f, 0.44f},	{0.0f, 0.0f},   { 0.8f,  0.5f,  0.0f}}, // right
-            {{ 0.5f, 0.0f,  0.5f},     {0.83f, 0.70f, 0.44f},	{5.0f, 0.0f},   { 0.8f,  0.5f,  0.0f}},
-            {{ 0.0f, 0.8f,  0.0f},     {0.92f, 0.86f, 0.76f},	{2.5f, 5.0f},   { 0.8f,  0.5f,  0.0f}},
-
-            {{ 0.5f, 0.0f,  0.5f},     {0.83f, 0.70f, 0.44f},	{5.0f, 0.0f},   { 0.0f,  0.5f,  0.8f}}, // front
-            {{-0.5f, 0.0f,  0.5f},     {0.83f, 0.70f, 0.44f},	{0.0f, 0.0f},   { 0.0f,  0.5f,  0.8f}},
-            {{ 0.0f, 0.8f,  0.0f},     {0.92f, 0.86f, 0.76f},	{2.5f, 5.0f},   { 0.0f,  0.5f,  0.8f}}
+            {{-1.0f, 0.0f,  1.0f},     {0.83f, 0.70f, 0.44f},	{0.0f, 0.0f},   { 0.0f,  1.0f,  0.0f}}, // bottom
+            {{-1.0f, 0.0f, -1.0f},     {0.83f, 0.70f, 0.44f},	{0.0f, 1.0f},   { 0.0f,  1.0f,  0.0f}},
+            {{ 1.0f, 0.0f, -1.0f},     {0.83f, 0.70f, 0.44f},	{1.0f, 1.0f},   { 0.0f,  1.0f,  0.0f}},
+            {{ 1.0f, 0.0f,  1.0f},     {0.83f, 0.70f, 0.44f},	{1.0f, 0.0f},   { 0.0f,  1.0f,  0.0f}},
         };
 
         // Indices for vertices order
         std::vector<GLuint> indices =
         {
             0, 1, 2,
-            0, 2, 3,
-            4, 6, 5,
-            7, 9, 8,
-            10, 12, 11,
-            13, 15, 14
+            0, 2, 3
         };
-
-        std::vector<Vertex> lightVertices = {
-            {{-0.1f, -0.1f,  0.1f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},
-            {{-0.1f, -0.1f, -0.1f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},
-            {{ 0.1f, -0.1f, -0.1f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},
-            {{ 0.1f, -0.1f,  0.1f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},
-            {{-0.1f,  0.1f,  0.1f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},
-            {{-0.1f,  0.1f, -0.1f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},
-            {{ 0.1f,  0.1f, -0.1f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},
-            {{ 0.1f,  0.1f,  0.1f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}}
-        };
-
-        std::vector<GLuint> lightIndices =
-        {
-            0, 1, 2,
-            0, 2, 3,
-            0, 4, 7,
-            0, 7, 3,
-            3, 7, 6,
-            3, 6, 2,
-            2, 6, 5,
-            2, 5, 1,
-            1, 5, 4,
-            1, 4, 0,
-            4, 5, 6,
-            4, 6, 7
-        };
-
-        m_vao = VertexArray::create();
-        m_vao->bind();
-
-        // Generate the VBO and EBO
-        m_vbo = VertexBuffer::create(vertices);
-        m_ebo = ElementBuffer::create(indices);
-
-        m_vao->linkAttribute(m_vbo, 0, 3, GL_FLOAT, sizeof(Vertex), static_cast<void*>(0));
-        m_vao->linkAttribute(m_vbo, 1, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(3 * sizeof(GL_FLOAT)));
-        m_vao->linkAttribute(m_vbo, 2, 2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(6 * sizeof(GL_FLOAT)));
-        m_vao->linkAttribute(m_vbo, 3, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(8 * sizeof(GL_FLOAT)));
-
-        // Re-bind the VAO and VBO to 0 so we don't accidentally modify them
-        m_vao->unbind();
-        m_vbo->unbind();
-
-        // Re-bind the EBO *after* the VAO because the VAO is using the EBO
-        m_ebo->unbind();
-
-        m_lightVAO = VertexArray::create();
-        m_lightVAO->bind();
-
-        m_lightVBO = VertexBuffer::create(lightVertices);
-        m_lightEBO = ElementBuffer::create(lightIndices);
-
-        m_lightVAO->linkAttribute(m_lightVBO, 0, 3, GL_FLOAT, sizeof(Vertex), static_cast<void*>(0));
-        m_lightVAO->linkAttribute(m_lightVBO, 1, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(3 * sizeof(GL_FLOAT)));
-        m_lightVAO->linkAttribute(m_lightVBO, 2, 2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(6 * sizeof(GL_FLOAT)));
-        m_lightVAO->linkAttribute(m_lightVBO, 3, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(8 * sizeof(GL_FLOAT)));
-
-        m_lightVAO->unbind();
-        m_lightVBO->unbind();
-        m_lightEBO->unbind();
 
         glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
@@ -297,8 +197,10 @@ namespace Alkahest
         glUniformMatrix4fv(glGetUniformLocation(m_lightShader->getID(), "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
         glUniform4f(glGetUniformLocation(m_lightShader->getID(), "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 
-        m_tex = Texture::create("assets/textures/brick.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-        m_tex->setUniformTexture(m_shaderProgram, "tex0", 0);
+        m_tex = Texture::create("assets/textures/planks.png", "diffuse", 0, GL_RGBA, GL_UNSIGNED_BYTE);
+        m_spec = Texture::create("assets/textures/planksSpec.png", "specular", 1, GL_RED, GL_UNSIGNED_BYTE);
+
+        m_floor = Mesh::create(vertices, indices, {m_tex, m_spec});
 
         glEnable(GL_DEPTH_TEST);
     }
@@ -311,15 +213,9 @@ namespace Alkahest
     void OpenGLWindow::shutdown()
     {
         // cleanup
-        m_vao->destroy();
-        m_vbo->destroy();
-        m_ebo->destroy();
         m_tex->destroy();
+        m_spec->destroy();
         m_shaderProgram->destroy();
-
-        m_lightVAO->destroy();
-        m_lightVBO->destroy();
-        m_lightEBO->destroy();
         m_lightShader->destroy();
 
         glfwDestroyWindow(m_window);

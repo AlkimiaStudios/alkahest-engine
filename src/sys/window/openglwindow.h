@@ -5,10 +5,10 @@
 #include "../events/event.h"
 #include "../input/input.h"
 #include "../render/shader.h"
-#include "../render/vertexarray.h"
-#include "../render/buffer.h"
 #include "../render/texture.h"
+#include "../render/buffer.h"
 #include "../render/camera.h"
+#include "../render/mesh.h"
 
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
@@ -74,16 +74,14 @@ namespace Alkahest
         GLFWwindow *m_window;
 
         Ref<Shader> m_shaderProgram;
-        Ref<VertexArray> m_vao;
-        Ref<VertexBuffer> m_vbo;
-        Ref<ElementBuffer> m_ebo;
-
         Ref<Shader> m_lightShader;
-        Ref<VertexArray> m_lightVAO;
-        Ref<VertexBuffer> m_lightVBO;
-        Ref<ElementBuffer> m_lightEBO;
-
+        
         Ref<Texture> m_tex;
+        Ref<Texture> m_spec;
+
         Ref<Camera> m_cam;
+
+        Ref<Mesh> m_floor;
+        Ref<Mesh> m_light;
     };
 }

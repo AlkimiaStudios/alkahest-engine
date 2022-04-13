@@ -28,7 +28,7 @@ namespace Alkahest
         virtual void setSensitivity(float sens) = 0;
 
         virtual glm::mat4 getViewMatrix(float fov, float aspectRatio, float nearPlane, float farPlane) = 0;
-        virtual void updateMatrixInShader(glm::mat4 camMatrix, Ref<Shader> shader, const char* uniform) = 0;
+        virtual void updateMatrixInShader(Ref<Shader> shader, const char* uniform) = 0;
 
         static Ref<Camera> create(glm::vec3 position);
     };

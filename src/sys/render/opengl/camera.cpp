@@ -75,11 +75,12 @@ namespace Alkahest
 
         projection = glm::perspective(glm::radians(fov), aspectRatio, nearPlane, farPlane);
 
-        return projection * view;
+        m_matrix = projection * view;
+        return m_matrix;
     }
 
-    void OpenGLCamera::updateMatrixInShader(glm::mat4 camMatrix, Ref<Shader> shader, const char* uniform)
+    void OpenGLCamera::updateMatrixInShader(Ref<Shader> shader, const char* uniform)
     {
-        glUniformMatrix4fv(glGetUniformLocation(shader->getID(), uniform), 1, GL_FALSE, glm::value_ptr(camMatrix));
+        glUniformMatrix4fv(glGetUniformLocation(shader->getID(), uniform), 1, GL_FALSE, glm::value_ptr(m_matrix));
     }
 }

@@ -3,15 +3,16 @@
 
 namespace Alkahest
 {
-    Ref<Texture> Texture::create(const char* image, uint32_t texType, uint32_t slot, uint32_t format, uint32_t pixelType)
+    Ref<Texture> Texture::create(const char* image, const char* texType, uint32_t slot, uint32_t format, uint32_t pixelType)
     {
         return CreateRef<OpenGLTexture>(image, texType, slot, format, pixelType);
     }
 
-    OpenGLTexture::OpenGLTexture(const char* image, uint32_t texType, uint32_t slot, uint32_t format, uint32_t pixelType)
+    OpenGLTexture::OpenGLTexture(const char* image, const char* texType, uint32_t slot, uint32_t format, uint32_t pixelType)
     {
-        // Assigns the texture type
+        // Assigns the texture type and slot
         m_type = texType;
+        m_slot = slot;
 
         // Store the width, height, and number of color channels for the image
         int width, height, colorChannels;
@@ -26,27 +27,27 @@ namespace Alkahest
         glGenTextures(1, &m_id);
 
         // Assign texture to a texture unit
-        glActiveTexture(slot);
-        glBindTexture(texType, m_id);
+        glActiveTexture(GL_TEXTURE0 + slot);
+        glBindTexture(GL_TEXTURE_2D, m_id);
 
         // Configures the type of algorithm that is used to make the image smaller or bigger
-        glTexParameteri(texType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(texType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
         // Configures the way the texture repeats (if it does at all)
-        glTexParameteri(texType, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(texType, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
         // Assign the image to the texture object
-        glTexImage2D(texType, 0, GL_RGBA, width, height, 0, format, pixelType, imgBytes);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, format, pixelType, imgBytes);
         // Generate mipmaps
-        glGenerateMipmap(texType);
+        glGenerateMipmap(GL_TEXTURE_2D);
 
         // Delete image data from mem since OpenGL has it now
         stbi_image_free(imgBytes);
 
         // Unbind the texture object so it can't be modified again
-        glBindTexture(texType, 0);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     void OpenGLTexture::setUniformTexture(Ref<Shader> shader, const char* uniform, unsigned int unit)
@@ -60,12 +61,13 @@ namespace Alkahest
 
     void OpenGLTexture::bind()
     {
-        glBindTexture(m_type, m_id);
+        glActiveTexture(GL_TEXTURE0 + m_slot);
+        glBindTexture(GL_TEXTURE_2D, m_id);
     }
 
     void OpenGLTexture::unbind()
     {
-        glBindTexture(m_type, 0);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     void OpenGLTexture::destroy()

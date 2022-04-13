@@ -26,11 +26,13 @@ namespace Alkahest
         void setSensitivity(float sens) override;
 
         glm::mat4 getViewMatrix(float fov, float aspectRatio, float nearPlane, float farPlane) override;
-        void updateMatrixInShader(glm::mat4 camMatrix, Ref<Shader> shader, const char* uniform) override;
+        void updateMatrixInShader(Ref<Shader> shader, const char* uniform) override;
     private:
         glm::vec3 m_pos;
         glm::vec3 m_ori = glm::vec3(0.0f, 0.0f, -1.0f);
         glm::vec3 m_up = glm::vec3(0.0f, 1.0f, 0.0f);
+
+        glm::mat4 m_matrix;
 
         float m_speed = 0.1f;
         float m_sens = 100.0f;

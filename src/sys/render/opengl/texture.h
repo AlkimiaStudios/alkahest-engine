@@ -11,8 +11,10 @@ namespace Alkahest
     class NOT_EXPORTED OpenGLTexture : public Texture
     {
     public:
-        OpenGLTexture(const char* image, uint32_t texType, uint32_t slot, uint32_t format, uint32_t pixelType);
+        OpenGLTexture(const char* image, const char* texType, uint32_t slot, uint32_t format, uint32_t pixelType);
         virtual ~OpenGLTexture() {};
+
+        virtual inline const char* getType() { return m_type; };
 
         void setUniformTexture(Ref<Shader> shader, const char* uniform, unsigned int unit) override;
 
@@ -21,6 +23,7 @@ namespace Alkahest
         void destroy() override;
     private:
         GLuint m_id;
-        GLenum m_type;
+        const char* m_type;
+        GLuint m_slot;
     };
 }
