@@ -81,6 +81,7 @@ set(GL3W_DIR "${LIB_DIR}/gl3w")
 set(GLM_DIR "${LIB_DIR}/glm")
 set(FMT_DIR "${LIB_DIR}/fmt")
 set(STB_DIR "${LIB_DIR}/stb")
+set(ASSIMP_DIR "${LIB_DIR}/assimp")
 
 # Disable unwanted GLFW features
 set(GLFW_BUILD_EXAMPLES OFF CACHE INTERNAL "Build the GLFW example programs")
@@ -97,12 +98,17 @@ execute_process(COMMAND python3 gl3w_gen.py --root ${PROJECT_BINARY_DIR}/lib/gl3
 # Set PIC for fmt as a shared lib
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 
+# Set options for assimp
+set(ASSIMP_BUILD_TESTS OFF CACHE INTERNAL "Build the assimp test suite")
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE INTERNAL "Build the assimp supplementary tools")
+
 # Build submodules
 add_subdirectory(${GLFW_DIR})
 add_subdirectory(${GL3W_DIR})
 add_subdirectory(${GLM_DIR})
 add_subdirectory(${FMT_DIR})
 add_subdirectory(${STB_DIR})
+add_subdirectory(${ASSIMP_DIR})
 
 # Add executable to build
 add_library(alkahest SHARED)
@@ -143,6 +149,10 @@ target_include_directories(alkahest PUBLIC "${FMT_DIR}/include")
 # Add include directory for STB Image
 target_link_libraries(alkahest PUBLIC "stb")
 target_include_directories(alkahest PUBLIC "${STB_DIR}")
+
+# Like assimp
+target_link_libraries(alkahest PRIVATE "assimp")
+target_include_directories(alkahest PRIVATE "${ASSIMP_DIR}/include")
 
 #
 # Post-Build
