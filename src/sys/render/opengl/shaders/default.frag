@@ -4,7 +4,6 @@
 out vec4 FragColor;
 
 // input from vert shader
-in vec3 color;
 in vec2 texCoords;
 in vec3 normal;
 in vec3 currentPos;

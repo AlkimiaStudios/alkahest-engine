@@ -9,6 +9,7 @@
 #include "../render/buffer.h"
 #include "../render/camera.h"
 #include "../render/mesh.h"
+#include "../../renderer/model.h"
 
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
@@ -58,10 +59,12 @@ namespace Alkahest
         virtual inline void setMainCamera(Ref<Camera> c) { m_cam = c; };
         virtual inline void initializeInput() { Input::initialize(m_window); };
         virtual void setInputMode(InputMode mode) override;
+        void registerRenderable(Ref<IRenderable> r) override;
     private:
+        static OpenGLWindow *instance;
+
         void init(const WindowProps& props);
         void shutdown();
-
 
         struct WindowData {
             std::string title;
@@ -75,13 +78,9 @@ namespace Alkahest
 
         Ref<Shader> m_shaderProgram;
         Ref<Shader> m_lightShader;
-        
-        Ref<Texture> m_tex;
-        Ref<Texture> m_spec;
 
         Ref<Camera> m_cam;
 
-        Ref<Mesh> m_floor;
-        Ref<Mesh> m_light;
+        std::vector<Ref<IRenderable>> m_renderables;
     };
 }

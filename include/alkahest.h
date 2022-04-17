@@ -16,6 +16,11 @@
 #include "../src/net/client.h"
 #include "../src/net/server.h"
 
+#include "../src/renderer/common.h"
+#include "../src/renderer/model.h"
+
+#include "../src/util/importers/modelimporter.h"
+
 #ifdef SOME_DX11_MACRO
 #else // OpenGL Fallback
 #include "../src/sys/input/openglkeys.h"

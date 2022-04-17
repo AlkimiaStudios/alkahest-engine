@@ -5,17 +5,18 @@
 
 namespace Alkahest
 {
-    Ref<Mesh> Mesh::create(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Ref<Texture>> textures)
+    Ref<Mesh> Mesh::create(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Ref<Texture>> textures, unsigned int matIndex)
     {
-        return CreateRef<OpenGLMesh>(vertices, indices, textures);
+        return CreateRef<OpenGLMesh>(vertices, indices, textures, matIndex);
     }
 
-    OpenGLMesh::OpenGLMesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Ref<Texture>> textures)
+    OpenGLMesh::OpenGLMesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Ref<Texture>> textures, unsigned int matIndex)
     {
         // Save data in case we need it later
         m_vertices = vertices;
         m_indices = indices;
         m_textures = textures;
+        m_matIndex = matIndex;
 
         // Create and bind the VAO
         m_vao = VertexArray::create();
@@ -27,9 +28,8 @@ namespace Alkahest
 
         // Link the VBO data to the locations in the shader
         m_vao->linkAttribute(m_vbo, 0, 3, GL_FLOAT, sizeof(Vertex), static_cast<void*>(0));
-        m_vao->linkAttribute(m_vbo, 1, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(3 * sizeof(GL_FLOAT)));
-        m_vao->linkAttribute(m_vbo, 2, 2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(6 * sizeof(GL_FLOAT)));
-        m_vao->linkAttribute(m_vbo, 3, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(8 * sizeof(GL_FLOAT)));
+        m_vao->linkAttribute(m_vbo, 1, 2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(6 * sizeof(GL_FLOAT)));
+        m_vao->linkAttribute(m_vbo, 2, 3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<void*>(8 * sizeof(GL_FLOAT)));
 
         // Unbind everything
         m_vao->unbind();

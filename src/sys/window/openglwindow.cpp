@@ -5,6 +5,8 @@
 #include "../events/mouseevent.h"
 #include "../input/input.h"
 
+#include "../../util/importers/modelimporter.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -24,6 +26,7 @@
 
 namespace Alkahest
 {
+    IWindow* IWindow::instance = nullptr;
     static bool s_glfwInit = false;
 
     static void handleGLFWError(int e, const char *msg)
@@ -33,7 +36,9 @@ namespace Alkahest
 
     IWindow* IWindow::create(const WindowProps& props)
     {
-        return new OpenGLWindow(props);
+        if (instance == nullptr)
+            instance = new OpenGLWindow(props);
+        return instance;
     }
     
     OpenGLWindow::OpenGLWindow(const WindowProps& props)
@@ -56,8 +61,11 @@ namespace Alkahest
         int width, height;
         glfwGetFramebufferSize(m_window, &width, &height);
         m_cam->getViewMatrix(45.0f, static_cast<float>(width / height), 0.1f, 100.0f);
-
-        m_floor->draw(m_shaderProgram, m_cam);
+        
+        for (Ref<IRenderable> r : m_renderables)
+        {
+            r->draw();
+        }
         
         glfwSwapBuffers(m_window);
         glfwPollEvents();
@@ -164,43 +172,14 @@ namespace Alkahest
         m_shaderProgram = Shader::create("shaders/default.vert", "shaders/default.frag");
         m_lightShader = Shader::create("shaders/light.vert", "shaders/light.frag");
 
-        std::vector<Vertex> vertices = {
-        //  Coordinates           /    Colors                /  TexCoords     /  Normals             //
-            {{-1.0f, 0.0f,  1.0f},     {0.83f, 0.70f, 0.44f},	{0.0f, 0.0f},   { 0.0f,  1.0f,  0.0f}}, // bottom
-            {{-1.0f, 0.0f, -1.0f},     {0.83f, 0.70f, 0.44f},	{0.0f, 1.0f},   { 0.0f,  1.0f,  0.0f}},
-            {{ 1.0f, 0.0f, -1.0f},     {0.83f, 0.70f, 0.44f},	{1.0f, 1.0f},   { 0.0f,  1.0f,  0.0f}},
-            {{ 1.0f, 0.0f,  1.0f},     {0.83f, 0.70f, 0.44f},	{1.0f, 0.0f},   { 0.0f,  1.0f,  0.0f}},
-        };
-
-        // Indices for vertices order
-        std::vector<GLuint> indices =
-        {
-            0, 1, 2,
-            0, 2, 3
-        };
-
         glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
         glm::mat4 lightModel = glm::mat4(1.0f);
         lightModel = glm::translate(lightModel, lightPos);
 
-        glm::vec3 pyramidPos = glm::vec3(0.0f, 0.0f, 0.0f);
-        glm::mat4 pyramidModel = glm::mat4(1.0f);
-        pyramidModel = glm::translate(pyramidModel, pyramidPos);
-
         m_shaderProgram->activate();
-        glUniformMatrix4fv(glGetUniformLocation(m_shaderProgram->getID(), "model"), 1, GL_FALSE, glm::value_ptr(pyramidModel));
         glUniform4f(glGetUniformLocation(m_shaderProgram->getID(), "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
         glUniform3f(glGetUniformLocation(m_shaderProgram->getID(), "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-
-        m_lightShader->activate();
-        glUniformMatrix4fv(glGetUniformLocation(m_lightShader->getID(), "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
-        glUniform4f(glGetUniformLocation(m_lightShader->getID(), "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-
-        m_tex = Texture::create("assets/textures/planks.png", "diffuse", 0, GL_RGBA, GL_UNSIGNED_BYTE);
-        m_spec = Texture::create("assets/textures/planksSpec.png", "specular", 1, GL_RED, GL_UNSIGNED_BYTE);
-
-        m_floor = Mesh::create(vertices, indices, {m_tex, m_spec});
 
         glEnable(GL_DEPTH_TEST);
     }
@@ -210,11 +189,16 @@ namespace Alkahest
         glfwSetInputMode(m_window, GLFW_CURSOR, mode);
     }
 
+    void OpenGLWindow::registerRenderable(Ref<IRenderable> r)
+    {
+        m_renderables.push_back(r);
+        r->setCamera(m_cam);
+        r->setShader(m_shaderProgram);
+    }
+
     void OpenGLWindow::shutdown()
     {
         // cleanup
-        m_tex->destroy();
-        m_spec->destroy();
         m_shaderProgram->destroy();
         m_lightShader->destroy();
 

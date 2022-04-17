@@ -11,12 +11,14 @@ file(
     source_files
     "${source_dir}/init/*.cpp"
     "${source_dir}/net/*.cpp"
+    "${source_dir}/renderer/opengl/*.cpp"
     "${source_dir}/sys/events/*.cpp"
     "${source_dir}/sys/log/*.cpp"
     "${source_dir}/sys/window/*.cpp"
     "${source_dir}/sys/input/*.cpp"
     "${source_dir}/sys/render/*.cpp"
     "${source_dir}/sys/render/opengl/*.cpp"
+    "${source_dir}/util/importers/*.cpp"
 )
 
 # "Library" for project options / C++ standard
@@ -151,8 +153,8 @@ target_link_libraries(alkahest PUBLIC "stb")
 target_include_directories(alkahest PUBLIC "${STB_DIR}")
 
 # Like assimp
-target_link_libraries(alkahest PRIVATE "assimp")
-target_include_directories(alkahest PRIVATE "${ASSIMP_DIR}/include")
+target_link_libraries(alkahest PUBLIC "assimp")
+target_include_directories(alkahest PUBLIC "${ASSIMP_DIR}/include")
 
 #
 # Post-Build

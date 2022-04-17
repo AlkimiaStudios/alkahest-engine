@@ -4,6 +4,7 @@
 #include "../events/event.h"
 #include "../input/input.h"
 #include "../render/camera.h"
+#include "../../renderer/common.h"
 
 // Much of the early systems developed for AlkahestEngine were developed following
 // along with the Game Engine series from The Cherno (Yan Chernikov) as he built
@@ -45,7 +46,10 @@ namespace Alkahest
         virtual void setMainCamera(Ref<Camera> c) = 0;
         virtual void initializeInput() = 0;
         virtual void setInputMode(InputMode mode) = 0;
+        virtual void registerRenderable(Ref<IRenderable> r) = 0;
 
         static IWindow* create(const WindowProps& props = WindowProps());
+    protected:
+        static IWindow* instance;
     };
 }

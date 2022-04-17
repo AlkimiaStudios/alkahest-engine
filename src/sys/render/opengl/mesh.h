@@ -13,7 +13,7 @@ namespace Alkahest
     class NOT_EXPORTED OpenGLMesh : public Mesh
     {
     public:
-        OpenGLMesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Ref<Texture>> textures);
+        OpenGLMesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Ref<Texture>> textures, unsigned int matIndex);
         virtual ~OpenGLMesh();
 
         void draw(Ref<Shader> shader, Ref<Camera> cam) override;
@@ -21,6 +21,7 @@ namespace Alkahest
         std::vector<Vertex> m_vertices;
         std::vector<GLuint> m_indices;
         std::vector<Ref<Texture>> m_textures;
+        unsigned int m_matIndex;
 
         Ref<VertexArray> m_vao;
         Ref<VertexBuffer> m_vbo;

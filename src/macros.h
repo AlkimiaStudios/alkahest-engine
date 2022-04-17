@@ -44,4 +44,13 @@ namespace Alkahest
     {
         return std::make_shared<T>(std::forward<Args>(args)...);
     }
+
+    struct AlkahestError {};
+    struct ImportError : AlkahestError
+    {
+        ImportError(std::string path, std::string error) : path{path}, error{error} {};
+
+        std::string path;
+        std::string error;
+    };
 }

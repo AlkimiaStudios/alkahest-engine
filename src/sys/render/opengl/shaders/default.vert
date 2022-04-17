@@ -2,12 +2,10 @@
 
 // Positions
 layout (location = 0) in vec3 aPos;
-// Colors
-layout (location = 1) in vec3 aColor;
 // Texture
-layout (location = 2) in vec2 aTex;
+layout (location = 1) in vec2 aTex;
 // Normals
-layout (location = 3) in vec3 aNormal;
+layout (location = 2) in vec3 aNormal;
 
 // Output color to the frag shader
 out vec3 color;
@@ -28,7 +26,6 @@ void main()
     gl_Position = camMatrix * vec4(currentPos, 1.0);
     
     // Set color and texCoords to pass to frag shader
-    color = aColor;
     texCoords = aTex;
     normal = aNormal;
 }
