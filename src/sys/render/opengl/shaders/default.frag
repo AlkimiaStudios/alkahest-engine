@@ -8,9 +8,15 @@ in vec2 texCoords;
 in vec3 normal;
 in vec3 currentPos;
 
-// Get texture from the CPU
+// Get textures from the CPU
 uniform sampler2D tex0;
 uniform sampler2D tex1;
+
+// Uniforms for extra colors
+uniform vec3 ambientColor;
+uniform vec3 diffuseColor;
+uniform vec3 specularColor;
+
 uniform vec4 lightColor;
 uniform vec3 lightPos;
 uniform vec3 camPos;
@@ -41,7 +47,13 @@ vec4 pointLight()
    float specAmount = pow(max(dot(viewDir, reflectDir), 0.0), 16);
    float specular = specAmount * specularLight;
 
-   return (texture(tex0, texCoords) * (diffuse * inten + ambient) + texture(tex1, texCoords).r * specular * inten) * lightColor;
+   vec4 aa = vec4(ambientColor * ambient, 1.0f);
+   vec4 d = vec4(diffuseColor * diffuse * inten, 1.0f);
+   vec4 s = vec4(specularColor * specular * inten, 1.0f);
+   vec4 c = aa + d + s;
+
+   return c * lightColor;
+   //return (texture(tex0, texCoords) * (diffuse * inten + ambient) + texture(tex1, texCoords).r * specular * inten) * lightColor;
 }
 
 vec4 directionalLight()

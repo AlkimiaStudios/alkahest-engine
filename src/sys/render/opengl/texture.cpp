@@ -3,15 +3,15 @@
 
 namespace Alkahest
 {
-    Ref<Texture> Texture::create(const char* image, const char* texType, uint32_t slot, uint32_t format, uint32_t pixelType)
+    Ref<Texture> Texture::create(const char* image, TextureType type, unsigned int slot)
     {
-        return CreateRef<OpenGLTexture>(image, texType, slot, format, pixelType);
+        return CreateRef<OpenGLTexture>(image, type, slot);
     }
 
-    OpenGLTexture::OpenGLTexture(const char* image, const char* texType, uint32_t slot, uint32_t format, uint32_t pixelType)
+    OpenGLTexture::OpenGLTexture(const char* image, TextureType type, unsigned int slot)
     {
         // Assigns the texture type and slot
-        m_type = texType;
+        m_type = type;
         m_slot = slot;
 
         // Store the width, height, and number of color channels for the image
@@ -38,8 +38,25 @@ namespace Alkahest
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+        uint32_t format;
+        switch (colorChannels)
+        {
+        case 1:
+            format = GL_RED;
+            break;
+        case 3:
+            format = GL_RGB;
+            break;
+        case 4:
+            format = GL_RGBA;
+            break;
+        default:
+            format = GL_RGBA;
+            break;
+        }
+
         // Assign the image to the texture object
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, format, pixelType, imgBytes);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, format, GL_UNSIGNED_INT, imgBytes);
         // Generate mipmaps
         glGenerateMipmap(GL_TEXTURE_2D);
 

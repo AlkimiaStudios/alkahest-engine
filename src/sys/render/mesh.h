@@ -16,6 +16,8 @@ namespace Alkahest
 
         virtual void draw(Ref<Shader> shader, Ref<Camera> cam) = 0;
 
+        virtual unsigned int getMaterialIndex() = 0;
+
         static Ref<Mesh> create(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Ref<Texture>> textures, unsigned int matIndex = -1);
     };
 }

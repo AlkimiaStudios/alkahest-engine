@@ -5,13 +5,21 @@
 
 namespace Alkahest
 {
+    enum TextureType
+    {
+        Diffuse,
+        Specular,
+
+        TextureTypeUnknown = -1
+    };
+
     class API Texture
     {
     public:
         Texture() {};
         virtual ~Texture() {};
 
-        virtual const char* getType() = 0;
+        virtual TextureType getType() = 0;
 
         virtual void setUniformTexture(Ref<Shader> shader, const char* uniform, unsigned int unit) = 0;
 
@@ -19,6 +27,6 @@ namespace Alkahest
         virtual void unbind() = 0;
         virtual void destroy() = 0;
 
-        static Ref<Texture> create(const char* image, const char* texType, uint32_t slot, uint32_t format, uint32_t pixelType);
+        static Ref<Texture> create(const char* image, TextureType type, unsigned int slot);
     };
 }

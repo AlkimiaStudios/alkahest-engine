@@ -56,26 +56,6 @@ namespace Alkahest
         shader->activate();
         m_vao->bind();
 
-        // Counts for different shader types
-        unsigned int numDiffuse = 0;
-        unsigned int numSpecular = 0;
-
-        for (unsigned int i = 0; i < m_textures.size(); i++)
-        {
-            std::string num;
-            std::string type = m_textures[i]->getType();
-
-            if (type == "diffuse")
-                num = std::to_string(numDiffuse++);
-            else if (type == "specular")
-                num = std::to_string(numSpecular++);
-            else
-                logError("Invalid texture type! {}", type);
-            
-            m_textures[i]->setUniformTexture(shader, (type + num).c_str(), i);
-            m_textures[i]->bind();
-        }
-
         cam->updateMatrixInShader(shader, "camMatrix");
         glm::vec3 camPos = cam->getPosition();
         glUniform3f(glGetUniformLocation(shader->getID(), "camPos"), camPos.x, camPos.y, camPos.z);

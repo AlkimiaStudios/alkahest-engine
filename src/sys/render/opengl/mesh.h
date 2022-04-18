@@ -17,6 +17,8 @@ namespace Alkahest
         virtual ~OpenGLMesh();
 
         void draw(Ref<Shader> shader, Ref<Camera> cam) override;
+
+        virtual inline unsigned int getMaterialIndex() { return m_matIndex; };
     private:
         std::vector<Vertex> m_vertices;
         std::vector<GLuint> m_indices;

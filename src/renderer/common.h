@@ -3,6 +3,9 @@
 #include "../macros.h"
 #include "../sys/render/camera.h"
 #include "../sys/render/shader.h"
+#include "../sys/render/texture.h"
+
+#include <glm/glm.hpp>
 
 namespace Alkahest
 {
@@ -21,7 +24,14 @@ namespace Alkahest
         NumBuffers  = 6
     };
 
-    struct Material {};
+    struct Material {
+        Ref<Texture> DiffuseTexture;
+        Ref<Texture> SpecularTexture;
+
+        glm::vec3 AmbientColor;
+        glm::vec3 DiffuseColor;
+        glm::vec3 SpecularColor;
+    };
 
     class NOT_EXPORTED IRenderable
     {

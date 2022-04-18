@@ -19,8 +19,11 @@ namespace Alkahest
     public:
         static Ref<Model> import(const std::string& pathToFile);
     private:
-        static Ref<Model> processScene(const aiScene* scene);
+        static Ref<Model> processScene(const aiScene* scene, const std::string& pathToFile);
         static Ref<Mesh> initMesh(const aiMesh* mesh);
+        static std::vector<Material> initMaterials(const aiScene* scene, const std::string& pathToFile);
+        static Ref<Texture> loadTexture(aiTextureType type, const aiMaterial* mat, std::string dir, unsigned int index);
+        static glm::vec3 loadColorByKey(const char* key, const aiMaterial* mat);
     private:
         static Assimp::Importer m_importer;
         static unsigned int m_postProcessFlags;
