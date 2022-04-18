@@ -18,6 +18,8 @@
 
 #include "../src/renderer/common.h"
 #include "../src/renderer/model.h"
+#include "../src/renderer/texture.h"
+#include "../src/renderer/text.h"
 
 #include "../src/util/importers/modelimporter.h"
 

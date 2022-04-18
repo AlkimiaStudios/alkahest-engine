@@ -84,6 +84,7 @@ set(GLM_DIR "${LIB_DIR}/glm")
 set(FMT_DIR "${LIB_DIR}/fmt")
 set(STB_DIR "${LIB_DIR}/stb")
 set(ASSIMP_DIR "${LIB_DIR}/assimp")
+set(FREETYPE_DIR "${LIB_DIR}/freetype")
 
 # Disable unwanted GLFW features
 set(GLFW_BUILD_EXAMPLES OFF CACHE INTERNAL "Build the GLFW example programs")
@@ -111,6 +112,7 @@ add_subdirectory(${GLM_DIR})
 add_subdirectory(${FMT_DIR})
 add_subdirectory(${STB_DIR})
 add_subdirectory(${ASSIMP_DIR})
+add_subdirectory(${FREETYPE_DIR})
 
 # Add executable to build
 add_library(alkahest SHARED)
@@ -155,6 +157,9 @@ target_include_directories(alkahest PUBLIC "${STB_DIR}")
 # Like assimp
 target_link_libraries(alkahest PUBLIC "assimp")
 target_include_directories(alkahest PUBLIC "${ASSIMP_DIR}/include")
+
+target_link_libraries(alkahest PUBLIC "freetype")
+target_include_directories(alkahest PUBLIC "${FREETYPE_DIR}/include")
 
 #
 # Post-Build

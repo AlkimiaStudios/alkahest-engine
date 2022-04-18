@@ -15,8 +15,9 @@ completed for the Alkahest engine.
 * [X] Implement GLM
 * [X] Rendering
   * [X] Model Importing
-  * [ ] Texture Mapping
+  * [X] Texture Mapping
   * [X] World Transforms
+  * [ ] Text Rendering
 * [ ] Layer System
 * [ ] Serialization
 * [ ] Entity Component System
