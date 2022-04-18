@@ -13,8 +13,10 @@ completed for the Alkahest engine.
 * [X] Networking
 * [X] Static Input Polling
 * [X] Implement GLM
-* [ ] Rendering
-* [ ] Textures
+* [X] Rendering
+  * [X] Model Importing
+  * [ ] Texture Mapping
+  * [X] World Transforms
 * [ ] Layer System
 * [ ] Serialization
 * [ ] Entity Component System

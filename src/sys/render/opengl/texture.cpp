@@ -44,6 +44,9 @@ namespace Alkahest
         case 1:
             format = GL_RED;
             break;
+        case 2:
+            format = GL_RG;
+            break;
         case 3:
             format = GL_RGB;
             break;

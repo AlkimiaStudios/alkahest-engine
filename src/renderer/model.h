@@ -21,6 +21,8 @@ namespace Alkahest
         virtual void setShader(Ref<Shader> shader) = 0;
         virtual void setCamera(Ref<Camera> cam) = 0;
 
+        virtual void addMaterial(Material mat) = 0;
+
         virtual void destroy() = 0;
 
         Transform transform;

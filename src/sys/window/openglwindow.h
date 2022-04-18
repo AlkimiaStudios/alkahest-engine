@@ -5,7 +5,6 @@
 #include "../events/event.h"
 #include "../input/input.h"
 #include "../render/shader.h"
-#include "../render/texture.h"
 #include "../render/buffer.h"
 #include "../render/camera.h"
 #include "../render/mesh.h"

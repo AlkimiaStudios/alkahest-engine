@@ -4,7 +4,6 @@
 #include "../mesh.h"
 #include "../vertexarray.h"
 #include "../buffer.h"
-#include "../texture.h"
 
 #include <GL/gl3w.h>
 
@@ -13,7 +12,7 @@ namespace Alkahest
     class NOT_EXPORTED OpenGLMesh : public Mesh
     {
     public:
-        OpenGLMesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Ref<Texture>> textures, unsigned int matIndex);
+        OpenGLMesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, unsigned int matIndex);
         virtual ~OpenGLMesh();
 
         void draw(Ref<Shader> shader, Ref<Camera> cam) override;
@@ -22,7 +21,6 @@ namespace Alkahest
     private:
         std::vector<Vertex> m_vertices;
         std::vector<GLuint> m_indices;
-        std::vector<Ref<Texture>> m_textures;
         unsigned int m_matIndex;
 
         Ref<VertexArray> m_vao;

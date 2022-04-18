@@ -20,6 +20,8 @@ namespace Alkahest
         void setShader(Ref<Shader> shader) override;
         void setCamera(Ref<Camera> cam) override;
 
+        virtual inline void addMaterial(Material mat) { m_materials.push_back(mat); };
+
         void destroy() override;
     private:
         glm::vec3 m_position = glm::vec3(0.0f, 0.0f, 0.0f);

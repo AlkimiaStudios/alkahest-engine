@@ -182,6 +182,7 @@ namespace Alkahest
         glUniform3f(glGetUniformLocation(m_shaderProgram->getID(), "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
     }
 
     void OpenGLWindow::setInputMode(InputMode mode)

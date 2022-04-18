@@ -3,7 +3,7 @@
 #include "../macros.h"
 #include "../sys/render/camera.h"
 #include "../sys/render/shader.h"
-#include "../sys/render/texture.h"
+#include "texture.h"
 
 #include <glm/glm.hpp>
 
@@ -25,8 +25,8 @@ namespace Alkahest
     };
 
     struct Material {
-        Ref<Texture> DiffuseTexture;
-        Ref<Texture> SpecularTexture;
+        Ref<Texture2D> DiffuseTexture;
+        Ref<Texture2D> SpecularTexture;
 
         glm::vec3 AmbientColor;
         glm::vec3 DiffuseColor;

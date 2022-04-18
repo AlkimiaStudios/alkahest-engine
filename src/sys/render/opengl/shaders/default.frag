@@ -33,7 +33,7 @@ vec4 pointLight()
    float inten = 1.0 / (a * dist * dist + b * dist + 1.0);
 
    // Ambient lighting constant
-   float ambient = 0.2;
+   float ambient = 0.7;
 
    // Calculate diffuse lighting
    vec3 nNormal = normalize(normal);
@@ -47,13 +47,12 @@ vec4 pointLight()
    float specAmount = pow(max(dot(viewDir, reflectDir), 0.0), 16);
    float specular = specAmount * specularLight;
 
-   vec4 aa = vec4(ambientColor * ambient, 1.0f);
-   vec4 d = vec4(diffuseColor * diffuse * inten, 1.0f);
-   vec4 s = vec4(specularColor * specular * inten, 1.0f);
-   vec4 c = aa + d + s;
+   vec3 aa = ambientColor * ambient;
+   vec3 d = diffuseColor * diffuse * inten;
+   vec3 s = specularColor * specular * inten * texture(tex1, texCoords).r;
+   vec3 c = aa + d + s;
 
-   return c * lightColor;
-   //return (texture(tex0, texCoords) * (diffuse * inten + ambient) + texture(tex1, texCoords).r * specular * inten) * lightColor;
+   return (texture(tex0, texCoords) * (diffuse * inten + ambient) + texture(tex1, texCoords).r * specular * inten) * lightColor;
 }
 
 vec4 directionalLight()

@@ -4,7 +4,6 @@
 #include "shader.h"
 #include "camera.h"
 #include "buffer.h"
-#include "texture.h"
 
 namespace Alkahest
 {
@@ -18,6 +17,6 @@ namespace Alkahest
 
         virtual unsigned int getMaterialIndex() = 0;
 
-        static Ref<Mesh> create(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Ref<Texture>> textures, unsigned int matIndex = -1);
+        static Ref<Mesh> create(std::vector<Vertex> vertices, std::vector<uint32_t> indices, unsigned int matIndex = -1);
     };
 }

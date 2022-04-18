@@ -1,7 +1,7 @@
 #include "modelimporter.h"
 #include "../../sys/log/log.h"
 #include "../../sys/render/buffer.h"
-#include "../../sys/render/texture.h"
+#include "../../renderer/texture.h"
 #include "../../sys/render/mesh.h"
 #include "../../sys/window/window.h"
 
@@ -10,7 +10,7 @@
 namespace Alkahest
 {
     Assimp::Importer ModelImporter::m_importer;
-    unsigned int ModelImporter::m_postProcessFlags = aiProcessPreset_TargetRealtime_MaxQuality;
+    unsigned int ModelImporter::m_postProcessFlags = aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_FlipUVs;
 
     Ref<Model> ModelImporter::import(const std::string& pathToFile)
     {
@@ -38,7 +38,6 @@ namespace Alkahest
             meshes.push_back(initMesh(paiMesh));
         }
 
-        //TODO: grab texture data
         std::vector<Material> materials = initMaterials(scene, pathToFile);
 
         Ref<Model> m = Model::create(meshes, materials);
@@ -69,18 +68,20 @@ namespace Alkahest
             const aiVector3D& texCoord = mesh->HasTextureCoords(0) ? mesh->mTextureCoords[0][i] : zeroVector;
 
             Vertex v = {{pos.x, pos.y, pos.z}, {texCoord.x, texCoord.y}, norm};
+
             vertices.push_back(v);
         }
 
         // Populate the index buffer
         for (unsigned int i = 0 ; i < mesh->mNumFaces ; i++) {
             const aiFace& face = mesh->mFaces[i];
-            indices.push_back(face.mIndices[0]);
-            indices.push_back(face.mIndices[1]);
-            indices.push_back(face.mIndices[2]);
+            for (unsigned int j = 0; j < face.mNumIndices; j++)
+            {
+                indices.push_back(face.mIndices[j]);
+            }
         }
 
-        return Mesh::create(vertices, indices, {}, mesh->mMaterialIndex);
+        return Mesh::create(vertices, indices, mesh->mMaterialIndex);
     }
 
     std::string dirFromFilePath(const std::string& pathToFile)
@@ -114,8 +115,8 @@ namespace Alkahest
         {
             const aiMaterial* mat = scene->mMaterials[i];
 
-            Ref<Texture> diffuseTexture = loadTexture(aiTextureType_DIFFUSE, mat, dir, i);
-            Ref<Texture> specularTexture = loadTexture(aiTextureType_SHININESS, mat, dir, i);
+            Ref<Texture2D> diffuseTexture = loadTexture(aiTextureType_DIFFUSE, mat, dir, i);
+            Ref<Texture2D> specularTexture = loadTexture(aiTextureType_SHININESS, mat, dir, i);
 
             glm::vec3 ambientColor = loadColorByKey("ambient", mat);
             glm::vec3 diffuseColor = loadColorByKey("diffuse", mat);
@@ -134,19 +135,19 @@ namespace Alkahest
         return mats;
     }
 
-    Ref<Texture> ModelImporter::loadTexture(aiTextureType type, const aiMaterial* mat, std::string dir, unsigned int index)
+    Ref<Texture2D> ModelImporter::loadTexture(aiTextureType type, const aiMaterial* mat, std::string dir, unsigned int index)
     {
-        Ref<Texture> t = nullptr;
+        Ref<Texture2D> t = nullptr;
 
         TextureType internalType;
         switch (type)
         {
         case aiTextureType_DIFFUSE:
-            internalType = TextureType::Diffuse;
+            internalType = TextureType::TextureTypeDiffuse;
             break;
         
         case aiTextureType_SHININESS:
-            internalType = TextureType::Specular;
+            internalType = TextureType::TextureTypeSpecular;
             break;
         
         default:
@@ -175,7 +176,9 @@ namespace Alkahest
 
                 std::string fullPath = dir + "/" + p;
 
-                t = Texture::create(fullPath.c_str(), internalType, index);
+                t = Texture2D::create();
+                t->load(fullPath.c_str());
+                t->setType(internalType);
             }
         }
 

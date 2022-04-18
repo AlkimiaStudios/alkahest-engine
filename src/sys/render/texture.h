@@ -7,8 +7,8 @@ namespace Alkahest
 {
     enum TextureType
     {
-        Diffuse,
-        Specular,
+        TextureTypeDiffuse,
+        TextureTypeSpecular,
 
         TextureTypeUnknown = -1
     };
