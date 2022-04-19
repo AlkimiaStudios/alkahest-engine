@@ -60,7 +60,7 @@ namespace Alkahest
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glfwGetFramebufferSize(m_window, &m_width, &m_height);
-        m_cam->getViewMatrix(45.0f, static_cast<float>(m_width / m_height), 0.1f, 100.0f);
+        m_cam->getViewMatrix(45.0f, static_cast<float>(m_width) / static_cast<float>(m_height), 0.1f, 100.0f);
         
         for (Ref<IRenderable> r : m_renderables)
         {
