@@ -4,6 +4,7 @@
 #include "../events/keyevent.h"
 #include "../events/mouseevent.h"
 #include "../input/input.h"
+#include "../../renderer/text.h"
 
 #include "../../util/importers/modelimporter.h"
 
@@ -58,9 +59,8 @@ namespace Alkahest
 		// Clean the back buffer and assign the new color to it
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        int width, height;
-        glfwGetFramebufferSize(m_window, &width, &height);
-        m_cam->getViewMatrix(45.0f, static_cast<float>(width / height), 0.1f, 100.0f);
+        glfwGetFramebufferSize(m_window, &m_width, &m_height);
+        m_cam->getViewMatrix(45.0f, static_cast<float>(m_width / m_height), 0.1f, 100.0f);
         
         for (Ref<IRenderable> r : m_renderables)
         {
@@ -130,9 +130,8 @@ namespace Alkahest
             glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
         setVSync(true);
 
-        int width, height;
-        glfwGetFramebufferSize(m_window, &width, &height);
-        glViewport(0, 0, width, height);
+        glfwGetFramebufferSize(m_window, &m_width, &m_height);
+        glViewport(0, 0, m_width, m_height);
 
         glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow* window, int width, int height){
             glViewport(0, 0, width, height);
@@ -169,17 +168,18 @@ namespace Alkahest
             Input::setMouseScroll(x, y);
         });
 
-        m_shaderProgram = Shader::create("shaders/default.vert", "shaders/default.frag");
+        m_modelShader = Shader::create("shaders/default.vert", "shaders/default.frag");
         m_lightShader = Shader::create("shaders/light.vert", "shaders/light.frag");
+        m_textShader = Shader::create("shaders/text.vert", "shaders/text.frag");
 
         glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
         glm::mat4 lightModel = glm::mat4(1.0f);
         lightModel = glm::translate(lightModel, lightPos);
 
-        m_shaderProgram->activate();
-        glUniform4f(glGetUniformLocation(m_shaderProgram->getID(), "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-        glUniform3f(glGetUniformLocation(m_shaderProgram->getID(), "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+        m_modelShader->activate();
+        glUniform4f(glGetUniformLocation(m_modelShader->getID(), "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+        glUniform3f(glGetUniformLocation(m_modelShader->getID(), "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
@@ -193,15 +193,32 @@ namespace Alkahest
     void OpenGLWindow::registerRenderable(Ref<IRenderable> r)
     {
         m_renderables.push_back(r);
+
+        switch (r->getType())
+        {
+        case IRenderable::RenderTypeModel:
+            r->setShader(m_modelShader);
+            break;
+        case IRenderable::RenderTypeLight:
+            r->setShader(m_lightShader);
+            break;
+        case IRenderable::RenderTypeText:
+            r->setShader(m_textShader);
+            break;
+        default:
+            r->setShader(m_modelShader);
+            break;
+        }
+
         r->setCamera(m_cam);
-        r->setShader(m_shaderProgram);
     }
 
     void OpenGLWindow::shutdown()
     {
         // cleanup
-        m_shaderProgram->destroy();
+        m_modelShader->destroy();
         m_lightShader->destroy();
+        m_textShader->destroy();
 
         glfwDestroyWindow(m_window);
         glfwTerminate();

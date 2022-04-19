@@ -36,11 +36,21 @@ namespace Alkahest
     class NOT_EXPORTED IRenderable
     {
     public:
+        enum RenderType
+        {
+            RenderTypeModel,
+            RenderTypeLight,
+            RenderTypeText
+        };
+    public:
         IRenderable() {};
         virtual ~IRenderable() {};
 
         virtual void draw() = 0;
         virtual void setShader(Ref<Shader> shader) = 0;
         virtual void setCamera(Ref<Camera> cam) = 0;
+        virtual RenderType getType() { return m_type; };
+    protected:
+        RenderType m_type;
     };
 }

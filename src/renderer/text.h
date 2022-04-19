@@ -17,6 +17,7 @@ namespace Alkahest
         virtual ~Font() {};
 
         virtual void setSize(unsigned int size) = 0;
+        virtual std::map<char, Character> getCharacterMap() = 0;
 
         static Ref<Font> create(const std::string& fontPath);
     };
@@ -34,7 +35,9 @@ namespace Alkahest
         virtual void setText(const std::string& text) = 0;
         virtual void setFont(Ref<Font> font) = 0;
         virtual void setPosition(glm::vec2 pos) = 0;
+        virtual void setColor(glm::vec3 color) = 0;
+        virtual void setAlpha(float a) = 0;
 
-        static Ref<Text2D> create(const std::string& text);
+        static Ref<Text2D> create(const std::string& text, Ref<Font> font);
     };
 }

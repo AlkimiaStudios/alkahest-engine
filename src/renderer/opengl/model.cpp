@@ -18,6 +18,7 @@ namespace Alkahest
     {
         m_meshes = meshes;
         m_materials = materials;
+        m_type = RenderType::RenderTypeModel;
     }
 
     glm::vec3 OpenGLModel::getPosition()

@@ -48,8 +48,8 @@ namespace Alkahest
 
         void onUpdate() override;
 
-        inline virtual unsigned int getWidth() const override { return m_data.width; };
-        inline virtual unsigned int getHeight() const override { return m_data.height; };
+        inline virtual int getWidth() const override { return m_width; };
+        inline virtual int getHeight() const override { return m_height; };
 
         virtual void setVSync(bool vsync) override;
         virtual bool isVSync() const override;
@@ -65,6 +65,8 @@ namespace Alkahest
         void init(const WindowProps& props);
         void shutdown();
 
+        int m_width, m_height;
+
         struct WindowData {
             std::string title;
             unsigned int width;
@@ -75,8 +77,9 @@ namespace Alkahest
         WindowData m_data;
         GLFWwindow *m_window;
 
-        Ref<Shader> m_shaderProgram;
+        Ref<Shader> m_modelShader;
         Ref<Shader> m_lightShader;
+        Ref<Shader> m_textShader;
 
         Ref<Camera> m_cam;
 

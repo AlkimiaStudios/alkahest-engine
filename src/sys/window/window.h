@@ -38,8 +38,8 @@ namespace Alkahest
         IWindow() {};
         virtual ~IWindow() {};
         virtual void onUpdate() = 0;
-        virtual unsigned int getWidth() const = 0;
-        virtual unsigned int getHeight() const = 0;
+        virtual int getWidth() const = 0;
+        virtual int getHeight() const = 0;
         virtual void setVSync(bool vsync) = 0;
         virtual bool isVSync() const = 0;
         virtual void setEventCallback(std::function<void(Event*)> e) = 0;
