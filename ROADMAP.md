@@ -17,7 +17,7 @@ completed for the Alkahest engine.
   * [X] Model Importing
   * [X] Texture Mapping
   * [X] World Transforms
-  * [ ] Text Rendering
+  * [X] Text Rendering
 * [ ] Layer System
 * [ ] Serialization
 * [ ] Entity Component System
