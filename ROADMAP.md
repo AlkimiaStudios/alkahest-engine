@@ -18,9 +18,9 @@ completed for the Alkahest engine.
   * [X] Texture Mapping
   * [X] World Transforms
   * [X] Text Rendering
+* [ ] Entity Component System
 * [ ] Layer System
 * [ ] Serialization
-* [ ] Entity Component System
 * [ ] Joystick/Controller Support
 * [ ] Tooling
 * [ ] Scripting
