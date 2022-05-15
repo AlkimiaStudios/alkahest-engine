@@ -5,6 +5,7 @@
 #include "../sys/events/event.h"
 #include "../sys/events/eventqueue.h"
 #include "../sys/render/camera.h"
+#include "../ecs/managers/ecsmanager.h"
 
 // Much of the early systems developed for AlkahestEngine were developed following
 // along with the Game Engine series from The Cherno (Yan Chernikov) as he built
@@ -45,4 +46,5 @@ namespace Alkahest
     };
 
     Application* CreateApplication();
+    ECSManager gECSManager;
 }

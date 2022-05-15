@@ -12,6 +12,8 @@
 #include <map>
 #include <functional>
 #include <vector>
+#include <array>
+#include <queue>
 #include <deque>
 #include <cstdlib>
 #include <memory>

@@ -74,6 +74,9 @@ namespace Alkahest
         logTrace("Creating main camera...");
         m_mainCamera = Camera::create({0.0f, 0.0f, 2.0f});
         m_window->setMainCamera(m_mainCamera);
+
+        logTrace("Initializing ECS...");
+        gECSManager.init();
     }
 
     // To be overridden in client, define custom systems, etc

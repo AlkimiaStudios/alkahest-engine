@@ -9,22 +9,22 @@ function(enable_sanitizers project_name)
 
         set(SANITIZERS "")
 
-        option(ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" ON)
+        option(ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" OFF)
         if(ENABLE_SANITIZER_ADDRESS)
             list(APPEND SANITIZERS "address")
         endif()
 
-        option(ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" ON)
+        option(ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
         if(ENABLE_SANITIZER_MEMORY)
             list(APPEND SANITIZERS "memory")
         endif()
 
-        option(ENABLE_SANITIZER_UNDEFINED "Enable undefined behavior sanitizer" ON)
+        option(ENABLE_SANITIZER_UNDEFINED "Enable undefined behavior sanitizer" OFF)
         if(ENABLE_SANITIZER_UNDEFINED)
             list(APPEND SANITIZERS "undefined")
         endif()
 
-        option(ENABLE_SANITIZER_THREAD "Enable thread sanitizer" ON)
+        option(ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
         if(ENABLE_SANITIZER_THREAD)
             list(APPEND SANITIZERS "thread")
         endif()

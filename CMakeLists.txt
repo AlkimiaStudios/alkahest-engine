@@ -11,6 +11,7 @@ file(
     source_files
     "${source_dir}/init/*.cpp"
     "${source_dir}/net/*.cpp"
+    "${source_dir}/ecs/managers/ecsmanager.cpp"
     "${source_dir}/renderer/opengl/*.cpp"
     "${source_dir}/sys/events/*.cpp"
     "${source_dir}/sys/log/*.cpp"

@@ -4,6 +4,11 @@
 
 #include "../src/sys/log/log.h"
 
+#include "../src/ecs/common.h"
+#include "../src/ecs/entity.h"
+#include "../src/ecs/components/include.h"
+#include "../src/ecs/systems/include.h"
+
 #include "../src/sys/events/event.h"
 #include "../src/sys/events/eventqueue.h"
 
