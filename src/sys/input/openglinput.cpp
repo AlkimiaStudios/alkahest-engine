@@ -37,7 +37,6 @@ namespace Alkahest
             }
         }
 
-
         return m_pInstance;
     }
 

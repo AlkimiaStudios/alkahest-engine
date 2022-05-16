@@ -4,6 +4,6 @@ namespace Alkahest
 {
     Entity Entity::create()
     {
-        return gECSManager.createEntity();
+        return ECSManager::createEntity();
     }
 }

@@ -76,7 +76,7 @@ namespace Alkahest
         m_window->setMainCamera(m_mainCamera);
 
         logTrace("Initializing ECS...");
-        gECSManager.init();
+        ECSManager::init();
     }
 
     // To be overridden in client, define custom systems, etc

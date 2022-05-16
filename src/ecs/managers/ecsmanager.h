@@ -19,33 +19,33 @@ namespace Alkahest
         // registerComponent and registerSystem are defined here
         // so the can be used in the init function with no issues
         template<typename T>
-        void registerComponent()
+        void registerComponentImpl()
         {
             m_componentManager->registerComponent<T>();
         }
 
         template<typename T>
-        void registerSystem()
+        void registerSystemImpl()
         {
             m_systemManager->registerSystem<T>();
         }
 
-        void init()
+        void initImpl()
         {
             m_entityManager = std::make_unique<EntityManager>();
             m_componentManager = std::make_unique<ComponentManager>();
             m_systemManager = std::make_unique<SystemManager>();
 
             // Register all engine-defined components and systems
-            registerComponent<Components::TransformComponent>();
+            registerComponentImpl<Components::TransformComponent>();
         };
 
-        Entity createEntity()
+        Entity createEntityImpl()
         {
             return m_entityManager->createEntity();
         };
 
-        void destroyEntity(Entity e)
+        void destroyEntityImpl(Entity e)
         {
             m_entityManager->destroyEntity(e);
             m_componentManager->EntityDestroyed(e);
@@ -53,7 +53,7 @@ namespace Alkahest
         };
 
         template<typename T>
-        void addComponentToEntity(Entity e, T component)
+        void addComponentToEntityImpl(Entity e, T component)
         {
             m_componentManager->addComponentToEntity(e, component);
             
@@ -65,9 +65,9 @@ namespace Alkahest
         };
 
         template<typename T>
-        void removeComponentFromEntity(Entity e, T component)
+        void removeComponentFromEntityImpl(Entity e)
         {
-            m_componentManager->removeComponentFromEntity(e, component);
+            m_componentManager->removeComponentFromEntity<T>(e);
 
             ALKAHEST_MASK_TYPE mask = m_entityManager->getMask(e);
             ALKAHEST_COMPONENT_ID_TYPE componentID = m_componentManager->
@@ -80,36 +80,87 @@ namespace Alkahest
         };
 
         template<typename T>
-        T& getComponent(Entity e)
+        T& getComponentImpl(Entity e)
         {
             return m_componentManager->getComponent<T>(e);
         };
 
         template<typename T>
-        ALKAHEST_COMPONENT_ID_TYPE getComponentType()
+        ALKAHEST_COMPONENT_ID_TYPE getComponentTypeImpl()
         {
             return m_componentManager->getComponentType<T>();
         };
 
         template<typename T>
-        void setSystemMask(ALKAHEST_MASK_TYPE mask)
+        void setSystemMaskImpl(ALKAHEST_MASK_TYPE mask)
         {
             m_systemManager->setMask<T>(mask);
         };
+    private:
+        static ECSManager& getInstance()
+        {
+            static ECSManager m;
+            std::cout << "ECSManager& address: " << &m << std::endl;
+            return m;
+        }
+    public: 
+        static void init() { getInstance().initImpl(); };
+        static Entity createEntity() { return getInstance().createEntityImpl(); };
+        static void destroyEntity(Entity e) { getInstance().destroyEntityImpl(e); };
+    public:
+        template<typename T>
+        static void registerComponent() { getInstance().registerComponentImpl<T>(); };
+        
+        template<typename T>
+        static void registerSystem() { getInstance().registerSystemImpl<T>(); };
+
+        template<typename T>
+        static void addComponentToEntity(Entity e, T component)
+            { getInstance().addComponentToEntityImpl(e, component); };
+
+        template<typename T>
+        static void removeComponentFromEntity(Entity e)
+            { getInstance().removeComponentFromEntityImpl<T>(e); };
+        
+        template<typename T>
+        static T& getComponent(Entity e) { return getInstance().getComponentImpl<T>(e); };
+
+        template<typename T>
+        static ALKAHEST_COMPONENT_ID_TYPE getComponentType()
+            { return getInstance().getComponentTypeImpl<T>(); };
+        
+        template<typename T>
+        static void setSystemMask(ALKAHEST_MASK_TYPE mask) { getInstance().setSystemMaskImpl<T>(mask); };
     private:
         std::unique_ptr<EntityManager> m_entityManager;
         std::unique_ptr<ComponentManager> m_componentManager;
         std::unique_ptr<SystemManager> m_systemManager;
     };
 
-    extern ECSManager gECSManager;
+    template<typename T>
+    void Entity::addComponent(T& c)
+    {
+        ECSManager::addComponentToEntity<T>(*this, c);
+    }
+
+    template<typename T>
+    T& Entity::getComponent()
+    {
+        return ECSManager::getComponent<T>(*this);
+    }
+
+    template<typename T>
+    void Entity::removeComponent()
+    {
+        ECSManager::removeComponentFromEntity<T>(*this);
+    }
 
     namespace Components
     {
         template<typename T>
         void _register()
         {
-            gECSManager.registerComponent<T>();
+            ECSManager::registerComponent<T>();
         }
     }
 
@@ -118,13 +169,13 @@ namespace Alkahest
         template<typename T>
         void _register()
         {
-            gECSManager.registerSystem<T>();
+            ECSManager::registerSystem<T>();
         }
 
         template<typename T>
         void setMask(ALKAHEST_MASK_TYPE mask)
         {
-            gECSManager.setSystemMask<T>(mask);
+            ECSManager::setSystemMask<T>(mask);
         }
     }
 }

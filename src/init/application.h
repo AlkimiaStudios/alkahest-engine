@@ -46,5 +46,4 @@ namespace Alkahest
     };
 
     Application* CreateApplication();
-    ECSManager gECSManager;
 }

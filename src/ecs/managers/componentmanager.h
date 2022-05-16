@@ -48,6 +48,7 @@ namespace Alkahest
 
         T& getData(Entity e)
         {
+            logTrace("in getData()");
             if (m_mEntityToIndex.find(e.ID) == m_mEntityToIndex.end())
             {
                 logError("Attempting to retrieve non-existent component!");
@@ -77,7 +78,15 @@ namespace Alkahest
         void registerComponent()
         {
             const char* typeName = typeid(T).name();
-            m_componentTypes.insert({ typeName, m_nextComponentType++ });
+
+            if (std::find(m_componentTypes.begin(), m_componentTypes.end(), typeName)
+                    != m_componentTypes.end())
+            {
+                logError("Component Type has already been registered! Type: {}", typeName);
+                throw AlkahestError{};
+            }
+
+            m_componentTypes.push_back(typeName);
             m_componentArrays.insert({ typeName, std::make_shared<ComponentArray<T>>() });
         };
 
@@ -85,12 +94,14 @@ namespace Alkahest
         ALKAHEST_COMPONENT_ID_TYPE getComponentType()
         {
             const char* typeName = typeid(T).name();
-            if (m_componentTypes.find(typeName) == m_componentTypes.end())
+            std::vector<const char*>::iterator i =
+                std::find(m_componentTypes.begin(), m_componentTypes.end(), typeName);
+            if (i == m_componentTypes.end())
             {
                 logError("Component not registered before use!");
                 throw AlkahestError{};
             }
-            return m_componentTypes[typeName];
+            return static_cast<uint8_t>(std::distance(m_componentTypes.begin(), i));
         };
 
         template<typename T>
@@ -102,7 +113,7 @@ namespace Alkahest
         template<typename T>
         T& getComponent(Entity e)
         {
-            getComponentArray<T>()->getData(e);
+            return getComponentArray<T>()->getData(e);
         };
 
         template<typename T>
@@ -120,21 +131,26 @@ namespace Alkahest
             }
         };
     private:
-        std::unordered_map<const char*, ALKAHEST_COMPONENT_ID_TYPE> m_componentTypes{};
-        std::unordered_map<const char*, std::shared_ptr<BaseComponentArray>> m_componentArrays{};
-        ALKAHEST_COMPONENT_ID_TYPE m_nextComponentType{};
-
         // Convenience function to get the array for a given type
         template<typename T>
         std::shared_ptr<ComponentArray<T>> getComponentArray()
         {
             const char* typeName = typeid(T).name();
-            if (m_componentTypes.find(typeName) == m_componentTypes.end())
+
+            if (std::find(m_componentTypes.begin(), m_componentTypes.end(), typeName)
+                    == m_componentTypes.end())
             {
-                logError("Component not registered before use!");
+                logError("Component not registered before use! Component Type: {}", typeName);
                 throw AlkahestError{};
             }
+
+            logTrace("Found ComponentArray for {}", typeName);
             return std::static_pointer_cast<ComponentArray<T>>(m_componentArrays[typeName]);
         };
+    private:
+        std::vector<const char*> m_componentTypes{};
+        //std::unordered_map<const char*, ALKAHEST_COMPONENT_ID_TYPE> m_componentTypes{};
+        std::unordered_map<const char*, std::shared_ptr<BaseComponentArray>> m_componentArrays{};
+        ALKAHEST_COMPONENT_ID_TYPE m_nextComponentType{};
     };
 }
